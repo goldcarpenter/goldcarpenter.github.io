@@ -23,7 +23,7 @@
 <ul>
 <li>在C盘的用户当前用户目录下找到<code>.ssh\id_rsa.pub</code>，将公钥内容使用软件打开拷贝至<code>setting -&gt; SSH and GPG keys -&gt; New SSH key</code></li>
 </ul>
-<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577507997408.png" alt="1577507997408"></p>
+<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577507997408.png" alt=""></p>
 <ul>
 <li>将刚复制的内容粘贴到key那里，title填你的计算机名称，保存。</li>
 </ul>
@@ -70,7 +70,7 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd [目标目录]</span><br><span class="line">$ hexo init</span><br></pre></td></tr></table></figure>
 
-<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577508913819.png" alt="1577508913819"></p>
+<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577508913819.png" alt=""></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">├── .deploy        #需要部署的文件</span><br><span class="line">├── node_modules    #Hexo插件</span><br><span class="line">├── public          #生成的静态网页文件</span><br><span class="line">├── scaffolds      #模板</span><br><span class="line">├── source         #博客正文和其他源文件，404、favicon、CNAME 都应该放在这里</span><br><span class="line">| ├── _drafts      #草稿</span><br><span class="line">| └── _posts        #文章</span><br><span class="line">├── themes          #主题</span><br><span class="line">├── _config.yml    #全局配置文件</span><br><span class="line">└── package.json    #npm 依赖等</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g # 生成相关页面</span><br><span class="line">$ hexo s # 启动本地hexo预览服务</span><br></pre></td></tr></table></figure>
@@ -79,7 +79,7 @@
 <li>执行以上命令之后，hexo就会在<strong>public文件夹</strong>生成相关html文件，<strong>这些文件将来都是要提交到github的</strong></li>
 <li><code>hexo s</code>是开启本地预览服务，打开浏览器访问 <a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> 即可看到hexo写了一篇名为 Hello World 的文章内容</li>
 </ul>
-<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577509279634.png" alt="1577509279634"></p>
+<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577509279634.png" alt=""></p>
 </li>
 <li><p>修改主题</p>
 <ul>
@@ -160,7 +160,7 @@
 <ul>
 <li>一些非md文件可以把他们放到source文件夹下，这里的所有文件都会原样复制（除了md文件）到public目录的：</li>
 </ul>
-<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577510118920.png" alt="1577510118920"></p>
+<p><img src="%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/1577510118920.png" alt=""></p>
 <ul>
 <li>由于hexo<strong>默认会把所有md文件都转换成html</strong>，包括README.md，所有需要<strong>每次生成之后</strong>、<strong>上传之前</strong>，<strong>手动</strong>将README.md复制到public目录，并删除README.html。</li>
 </ul>
