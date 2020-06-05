@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JJMJ's blog."><meta name="keywords" content="Java, Spring, MyBatis, 后端"><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.4"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.4"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><title>内部类 | 掘金木匠</title><meta name="generator" content="Hexo 4.2.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">内部类</h1><a id="logo" href="/.">掘金木匠</a><p class="description">不玩金融的软件工程师不是好的吃货</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">内部类</h1><div class="post-meta"><a href="/2020/06/05/%E5%86%85%E9%83%A8%E7%B1%BB/#comments" class="comment-count"><i id="changyan_count_unit" data-xid="2020/06/05/内部类/"></i>留言,<i id="changyan_parti_unit" data-xid="2020/06/05/内部类/"></i>参与</a><p><span class="date">Jun 05, 2020</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>点击</i></i></span></p></div><div class="post-content"><h1 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h1><ul>
+<li>分类<ul>
+<li>成员内部类</li>
+<li>局部内部类(包含匿名内部类)</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-成员内部类"><a href="#1-成员内部类" class="headerlink" title="1.成员内部类"></a>1.成员内部类</h2><ul>
+<li><p>定义格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">修饰符 <span class="class"><span class="keyword">class</span> 外部类名称</span>&#123;</span><br><span class="line">    修饰符 <span class="class"><span class="keyword">class</span> 内部类名称</span>&#123;</span><br><span class="line">    	<span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>案例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Body</span> </span>&#123; <span class="comment">//外部类</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    Body(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//外部类的方法——外部类用内部类，需要内部类对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">alive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Heart().beat();</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//成员内部类</span></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Heart</span> </span>&#123; </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="comment">//内部类用外部类，随意访问</span></span><br><span class="line">            System.out.println(name + <span class="string">"心脏跳动! "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="1-1如何使用成员内部类"><a href="#1-1如何使用成员内部类" class="headerlink" title="1.1如何使用成员内部类"></a>1.1如何使用成员内部类</h3><ul>
+<li><p>间接方式：在外部类的方法当中，使用内部类。然后只是调用外部类的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Body body = <span class="keyword">new</span> Body(<span class="string">"掘金木匠"</span>);</span><br><span class="line"><span class="comment">// 在外部类的方法当中，使用内部类</span></span><br><span class="line">body.alive();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>直接方式</strong>：公式：<code>[外部类名称.内部类名称对象名= new外部类名称().new内部类名称();]</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Body.Heart heart = <span class="keyword">new</span> Body(<span class="string">"掘金木匠"</span>).<span class="keyword">new</span> Heart();</span><br><span class="line">heart.beat();</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="1-2内部类同名变量"><a href="#1-2内部类同名变量" class="headerlink" title="1.2内部类同名变量"></a>1.2内部类同名变量</h3><ul>
+<li><p>如果出现了重名现象，那么格式是：<code>外部类名称.this.外部类成员变量名</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Outer</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">10</span>; <span class="comment">//外部类的成员变量</span></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> /*<span class="keyword">extends</span> <span class="title">object</span>*/ </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> num = <span class="number">20</span>; <span class="comment">//内部类的成员变量</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodInner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">int</span> num = <span class="number">30</span>; <span class="comment">//内部类方法的局部变量</span></span><br><span class="line">            System.out.println(num); <span class="comment">//局部变量，就近原则</span></span><br><span class="line">            System.out.println(<span class="keyword">this</span>.num); <span class="comment">//内部类的成员变量</span></span><br><span class="line">            System.out.println(Outer.<span class="keyword">this</span>.num); <span class="comment">//外部类的成员变量</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="2-局部内部类"><a href="#2-局部内部类" class="headerlink" title="2.局部内部类"></a>2.局部内部类</h2><ul>
+<li><p>如果一个类是<strong>定义在一个方法内部</strong>的，那么这就是一个局部内部类。</p>
+</li>
+<li><p><strong>局部</strong>：<strong>只有当前所属的方法才能使用它</strong>，出了这个方法外面就不能用了。</p>
+</li>
+<li><p>定义格式:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">修饰符 <span class="class"><span class="keyword">class</span> 外部类名称</span>&#123;</span><br><span class="line">    修饰符 返回值类型 外部类方法名称(参数列表) &#123;</span><br><span class="line">        <span class="class"><span class="keyword">class</span> 局部内部类名称</span>&#123;</span><br><span class="line">        	<span class="comment">//</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>案例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Outer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method0uter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">Inner</span> </span>&#123; <span class="comment">//局部内部类</span></span><br><span class="line">            <span class="keyword">int</span> num = <span class="number">10</span>;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodInner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(num); <span class="comment">// 10</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Inner inner = <span class="keyword">new</span> Inner();</span><br><span class="line">        inner.methodInner();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="2-1-局部内部类final问题"><a href="#2-1-局部内部类final问题" class="headerlink" title="2.1 局部内部类final问题"></a>2.1 局部内部类final问题</h3><ul>
+<li><p>局部内部类，如果希望<strong>访问所在方法的局部变量</strong>，那么这个局部变量<strong>必须</strong>是有效<strong>final</strong>的</p>
+</li>
+<li><p>原因</p>
+<ol>
+<li>new出来的对象在堆内存当中。</li>
+<li>局部变量是跟着方法走的，在栈内存当中。</li>
+<li>方法运行结束之后，立刻出栈，局部变量就会立刻消失。</li>
+<li>但是new出来的对象会在堆当中持续存在，直到垃圾回收消失。</li>
+<li><strong>局部变量与局部内部类的对象的生命周期不同；</strong></li>
+</ol>
+</li>
+<li><p>为解决这一问题，Java把局部内部类要访问的局部变量<strong>重新拷贝了一份，并把备份放在内部类的常量池中</strong>，这样不论方法有没有执行结束，拷贝都是存在的，就不会再出现访问不存在的变量的错误了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyOuter</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method0uter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// ⭐从Java 8开始，只要局部变量事实不变，那么final关键字可以省略。</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> num = <span class="number">10</span>; <span class="comment">//所在方法的局部变量</span></span><br><span class="line"><span class="comment">//      num = 130; 		× </span></span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">MyInner</span></span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodInner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>局部内部类访问的是方法体的参数呢？</p>
+<p>Java采取的方法是，<strong>默认为局部内部类的构造方法传入该参数作为构造方法的参数，然后用该参数来初始化内部类中拷贝的变量a。</strong></p>
+</li>
+<li><p>上面通过拷贝一份局部变量来解决生命周期不同的问题，如果方法体和局部内部类都改变了a的值会怎么样呢？</p>
+<ul>
+<li><strong>Java规定局部内部类可访问的局部变量必须为final的，即内部类不能改变要访问的局部变量的值，这样就不会出现数据不同步的问题了。</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="3-匿名内部类【局部内部类特例】"><a href="#3-匿名内部类【局部内部类特例】" class="headerlink" title="3 匿名内部类【局部内部类特例】"></a>3 匿名内部类【局部内部类特例】</h2><ul>
+<li><p>如果<strong>接口的实现类/父类的子类只需要使用唯一的一次</strong>，那么这种情况下就可以省略掉该类的定义，而改为使用匿名内部类</p>
+</li>
+<li><p>定义格式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">接口名称 对象名 = <span class="keyword">new</span> 接口名称() &#123;</span><br><span class="line">    <span class="comment">// 覆盖重写所有抽象方法</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>案例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;String&gt; col = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        Collections.addAll(col,<span class="string">"a"</span>,<span class="string">"b"</span>,<span class="string">"c"</span>);</span><br><span class="line">        <span class="comment">//==============================================</span></span><br><span class="line">        <span class="comment">// 局部内部类</span></span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">ConsumerImpl</span> <span class="keyword">implements</span> <span class="title">Consumer</span>&lt;<span class="title">String</span>&gt;</span></span><br><span class="line"><span class="class">        </span>&#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">                System.out.println(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ConsumerImpl consumer = <span class="keyword">new</span> ConsumerImpl();</span><br><span class="line">        col.stream().forEach(consumer);</span><br><span class="line">        <span class="comment">//==============================================</span></span><br><span class="line">        <span class="comment">// 匿名内部类</span></span><br><span class="line">        col.stream().forEach(<span class="keyword">new</span> Consumer&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">                System.out.println(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">//==============================================</span></span><br><span class="line">        <span class="comment">// lambda表达式</span></span><br><span class="line">        col.stream().forEach(s -&gt; System.out.println(s));</span><br><span class="line">        <span class="comment">//==============================================</span></span><br><span class="line">        <span class="comment">// 方法引用</span></span><br><span class="line">        col.stream().forEach(System.out::println);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="3-1-匿名对象"><a href="#3-1-匿名对象" class="headerlink" title="3.1 匿名对象"></a>3.1 匿名对象</h3><ul>
+<li><p>创建对象时，只有创建对象的语句，却没有把对象地址赋值给某个变量</p>
+</li>
+<li><p>虽然<strong>是创建对象的简化写法</strong>，但是应用场景非常有限。</p>
+</li>
+<li><p>语法格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> 类名(参数列表)；</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>应用场景</p>
+<ul>
+<li><p>创建匿名对象直接调用方法，没有变量名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Scanner(System.in).nextInt();</span><br><span class="line"><span class="keyword">new</span> Scanner(System.in).nextInt();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>匿名对象可以作为方法的参数和返回值</p>
+<ul>
+<li><p>作为参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 普通方式</span></span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        input(sc);</span><br><span class="line">        <span class="comment">//匿名对象作为方法接收的参数</span></span><br><span class="line">        input(<span class="keyword">new</span> Scanner(System.in));</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">input</span><span class="params">(Scanner sc)</span></span>&#123;</span><br><span class="line">        System.out.println(sc);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>作为返回值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test2</span> </span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">         <span class="comment">// 普通方式</span></span><br><span class="line">         Scanner sc = getScanner();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Scanner <span class="title">getScanner</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="comment">//普通方式</span></span><br><span class="line">         <span class="comment">//Scanner sc = new Scanner(System.in);</span></span><br><span class="line">         <span class="comment">//return sc;</span></span><br><span class="line">         <span class="comment">//匿名对象作为方法返回值</span></span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2匿名内部类-VS-匿名对象"><a href="#3-2匿名内部类-VS-匿名对象" class="headerlink" title="3.2匿名内部类 VS 匿名对象"></a>3.2匿名内部类 VS 匿名对象</h3><ul>
+<li>匿名内部类，在【创建对象】的时候，只能使用唯一一次；如果希望多次创建对象，而且类的内容一样的话，那么就必须使用单独定义的实现类了。</li>
+<li>匿名对象，在【调用方法】的时候，只能调用唯一一次；如果希望同一个对象，调用多次方法，那么必须给对象起个名字。</li>
+<li>匿名内部类是省略了【实现类/子类名称】，但是匿名对象是省略了【对象名称】</li>
+<li>强调：匿名内部类和匿名对象不是一回事</li>
+</ul>
+<h2 id="4-类的权限修饰符"><a href="#4-类的权限修饰符" class="headerlink" title="4.类的权限修饰符"></a>4.类的权限修饰符</h2><ul>
+<li>类的权限修饰符：<code>public</code> &gt; <code>protected</code> &gt;  <code>(default)</code> &gt; <code>private</code></li>
+<li><strong>定义一个类的时候，权限修饰符规则</strong><ul>
+<li><strong>外部类：public / (default)</strong></li>
+<li>成员内部类：public / protected / (default) / private</li>
+<li><strong>局部内部类：什么都不能写</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="5-编译后-Class文件"><a href="#5-编译后-Class文件" class="headerlink" title="5.编译后.Class文件"></a>5.编译后.Class文件</h2><ul>
+<li>外部类保存为：<code>外部类.class</code></li>
+<li>内部类保存为：<code>外部类$内部类.class</code></li>
+</ul>
+<p><img src="1581070999413.png" alt="1581070999413"></p>
+<h2 id="6-访问权限"><a href="#6-访问权限" class="headerlink" title="6.访问权限"></a>6.访问权限</h2><ul>
+<li>内部类用外部类，随意访问</li>
+<li>外部类用内部类，需要内部类对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Body</span> </span>&#123; <span class="comment">//外部类</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    Body(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//外部类的方法——外部类用内部类，需要内部类对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">alive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Heart().beat();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">	<span class="comment">//成员内部类</span></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Heart</span> </span>&#123; </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="comment">//内部类用外部类，随意访问</span></span><br><span class="line">            System.out.println(name + <span class="string">"心脏跳动! "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</div><div class="post-copyright"><blockquote><p>原文作者: 掘金木匠</p><p>原文链接: <a href="http://goldcarpenter.github.io/2020/06/05/内部类/">http://goldcarpenter.github.io/2020/06/05/内部类/</a></p><p>版权声明: 转载请注明出处(必须保留作者署名及链接)</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>分享到:</span></div></div><div class="post-nav"><a href="/2020/06/05/Java%E5%BC%82%E5%B8%B8/" class="next">Java异常</a></div><div id="comments"><div id="SOHUCS" sid="2020/06/05/内部类/"></div></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#内部类"><span class="toc-text">内部类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-成员内部类"><span class="toc-text">1.成员内部类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1如何使用成员内部类"><span class="toc-text">1.1如何使用成员内部类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2内部类同名变量"><span class="toc-text">1.2内部类同名变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-局部内部类"><span class="toc-text">2.局部内部类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-局部内部类final问题"><span class="toc-text">2.1 局部内部类final问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-匿名内部类【局部内部类特例】"><span class="toc-text">3 匿名内部类【局部内部类特例】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-匿名对象"><span class="toc-text">3.1 匿名对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2匿名内部类-VS-匿名对象"><span class="toc-text">3.2匿名内部类 VS 匿名对象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-类的权限修饰符"><span class="toc-text">4.类的权限修饰符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-编译后-Class文件"><span class="toc-text">5.编译后.Class文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-访问权限"><span class="toc-text">6.访问权限</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/05/%E5%86%85%E9%83%A8%E7%B1%BB/">内部类</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/05/Java%E5%BC%82%E5%B8%B8/">Java异常</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/06/GithububNologin/">Github无法登陆</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/02/javaIO/">javaIO（一）</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/18/hexo%E5%8D%9A%E5%AE%A2%E7%BB%91%E5%AE%9A%E5%9F%9F%E5%90%8D/">hexo博客绑定自定义域名</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/10/27/%E9%85%8D%E7%BD%AEhexo%E4%B8%8Egithub/">【博客搭建】使用hexo与github搭建个人博客系统（一）</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Debug%E8%AE%B0%E5%BD%95/">Debug记录</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java%E5%9F%BA%E7%A1%80/">java基础</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> 友情链接</i></div><ul></ul><a href="http://www.scu.edu.cn/" title="四川大学首页" target="_blank">四川大学首页</a><ul></ul><a href="http://www.scu.edu.cn/" title="个人项目——待完善" target="_blank">个人项目——待完善</a><ul></ul><a href="http://www.scu.edu.cn/" title="个人项目——待完善" target="_blank">个人项目——待完善</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅本站</a> |  <a href="/about/">联系博主</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">掘金木匠.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.4"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.4" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script><script>window._config = { showScore: true };
+(function(){ 
+  var appid = 'cyuBR2wWE'; 
+  var conf = 'cbd82aee65d05c481319a299102b4811'; 
+  var width = window.innerWidth || document.documentElement.clientWidth; 
+  var nodes =document.getElementsByTagName("head")[0]||document.head||document.documentElement;
+  if (/(Android|iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) && width < 750) {  
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+  }
+  else { 
+    var loadJs=function(d,a){
+      var b=document.createElement("script");b.setAttribute("type","text/javascript");
+      b.setAttribute("charset","UTF-8");
+      b.setAttribute("src",d);
+      if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}
+      nodes.appendChild(b)
+    };
+    loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); 
+  } 
+  var loadCss = function(cssString){  
+    var style=document.createElement("style");  
+    style.setAttribute("type", "text/css");  
+    if(style.styleSheet){// IE  
+        style.styleSheet.cssText = cssString;  
+    } else {// w3c  
+        var cssText = document.createTextNode(cssString);  
+        style.appendChild(cssText);  
+    }
+    nodes.appendChild(style);
+  }
+  //- window.onload=function(){
+  //-   if(window.outerWidth<=775){
+  //-     loadCss('.module-hot-topic,.module-cmt-float-bar{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .cbox-prompt-w span.prompt-empty-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w .form-text-w span.text-null,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w a.comment-link-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w span.comment-text-w,#SOHUCS #SOHU_MAIN .module-cmt-footer .section-service-w div.service-wrap-w a:hover,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w span.wrap-name-w,#SOHUCS #SOHU_MAIN .module-cmt-list .action-click-gw span.click-disable-eg a em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li div.title-name-gw,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number .comment-number span.cy-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number span.comment-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active,#SOHUCS #SOHU_MAIN .module-cmt-list .msg-wrap-gw .wrap-action-gw .action-click-gw span a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .picture-box-gw div.box-action-gw a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-action-gw .action-click-gw span a:hover em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-user-gw span.user-name-gw a{color:#40759b!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-r,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-l,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-r{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-l{background:#FFF!important;top:-2px!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-function-w .uploading-wrapper-dw div.wrapper-image-dw,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-main,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w div.form-text-w,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-list .module-cmt-box .post-wrap-w div.post-wrap-main{border:1px solid #e6e6e6!important;border-radius:20px 20px 20px 20px;margin:0!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw{width:130px!important;height:34px!important;line-height:33px!important;font-size:17px!important;background:#5483b1!important;border-radius:20px!important;color:#FFF!important;-webkit-box-shadow:0 -1px 4px #5483b1 inset;box-shadow:0 -1px 10px #5483b1 inset}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw:before{content:"发表评论"}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a:hover .btn-fw{color:#40759b!important;background:#FFF!important}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li{background:none!important;border-bottom:1px solid #e6e6e6}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active{border:1px solid #e6e6e6;border-radius:10px 10px 0 0;border-bottom:none}#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li .title-name-gw div.title-name-gw-tag{background:#5483b1!important;border-radius:3px}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type div.cmt-list-border{background-color:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item{border:1px solid #e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo{text-align:center;line-height:40px;border-radius:50%!important;background:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo:before{content:"畅";font-size:22px;color:#FFF}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text,#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text i{color:#5483b1!important}#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w{background:#FFF!important}@media screen and (min-width:900px){#SOHUCS #SOHU_MAIN .module-mobile-cmt-list .list-wrapper-wap .list-container-wap .list-item-wap .list-content-wrapper-wap .cmt-list-image-container .cmt-list-image{max-width: 100%;}}');
+  //-   }
+  //- };
+})();
+function removeElement(_element){
+     var _parentElement = _element.parentNode;
+     if(_parentElement){
+            _parentElement.removeChild(_element);
+     }
+}
+var removeAD = document.createElement("div");
+removeAD.id = 'removeAD';
+var adInterval1 = setInterval(function() {
+  if(document.querySelector("#feedAv")){
+    document.querySelector("[node-type=cmt-list]").appendChild(removeAD);
+    document.querySelector("#removeAD").appendChild(document.querySelector("#feedAv"));
+    //- removeElement(document.querySelectorAll("#feedAv")[0]);
+    var feedAv = document.querySelector("#feedAv").children;
+    for( item of feedAv){
+      item.style.display = 'none'
+    }
+    document.querySelector("#removeAD").style.display="none"
+    clearInterval(adInterval1);
+  }
+},1000);
+var adInterval2 = setInterval(function() {
+  if(document.querySelector("#pop_ad")){
+    removeElement(document.querySelector("#pop_ad"));
+    clearInterval(adInterval2);
+  }
+}, 1000);</script><script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script></body></html>
