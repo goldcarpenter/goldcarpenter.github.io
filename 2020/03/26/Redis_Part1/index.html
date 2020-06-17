@@ -1,0 +1,758 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JJMJ's blog."><meta name="keywords" content="Java, Spring, MyBatis, 后端"><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.4"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.4"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><title>Redis | 掘金木匠</title><meta name="generator" content="Hexo 4.2.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Redis</h1><a id="logo" href="/.">掘金木匠</a><p class="description">懂金融的软件工程师一定是一个合格的吃货</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">Redis</h1><div class="post-meta"><a href="/2020/03/26/Redis_Part1/#comments" class="comment-count"><i id="changyan_count_unit" data-xid="2020/03/26/Redis_Part1/"></i>留言,<i id="changyan_parti_unit" data-xid="2020/03/26/Redis_Part1/"></i>参与</a><p><span class="date">Mar 26, 2020</span><span><a href="/categories/Web%E5%BC%80%E5%8F%91/" class="category">Web开发</a></span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>点击</i></i></span></p></div><div class="post-content"><h1 id="0-架构"><a href="#0-架构" class="headerlink" title="0.架构"></a>0.架构</h1><ul>
+<li>Redis基础<ul>
+<li>Redis 入门</li>
+<li>数据类型</li>
+<li>通用命令</li>
+<li>Jedis</li>
+</ul>
+</li>
+<li>Redis高级<ul>
+<li>持久化</li>
+<li>redis.conf</li>
+<li>事务</li>
+<li>集群</li>
+</ul>
+</li>
+<li>Redis应用<ul>
+<li>企业级解决方案</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-Redis"><a href="#1-Redis" class="headerlink" title="1.Redis"></a>1.Redis</h1><h2 id="1-1NoSQL介绍"><a href="#1-1NoSQL介绍" class="headerlink" title="1.1NoSQL介绍"></a>1.1NoSQL介绍</h2><ul>
+<li>网站崩溃现象来源：①海量用户②高并发</li>
+<li>罪魁祸首——关系型数据库<ul>
+<li>性能瓶颈：磁盘IO性能低下</li>
+<li>扩展瓶颈：数据关系复杂,扩展性差,不便于大规模集群</li>
+</ul>
+</li>
+<li>解决思路<ul>
+<li>降低磁盘IO次数,越低越好——内存存储</li>
+<li>去除数据间关系，越简单越好——不存储关系，仅存储数据</li>
+</ul>
+</li>
+<li><strong><code>NoSQL</code>：即<code>Not-OnlySQL</code>(泛指非关系型的数据库）</strong></li>
+<li><strong>定位：作为关系型数据库的补充</strong></li>
+<li>作用：应对基于<strong>海量用户和海量数据</strong>前提下的数据处理问题。</li>
+<li>特征：<ul>
+<li>可扩容，可伸缩</li>
+<li>大数据量下高性能</li>
+<li>灵活的数据模型</li>
+<li>高可用</li>
+</ul>
+</li>
+<li>常见Nosql数据库：<ul>
+<li>Redis</li>
+<li>memcache</li>
+<li>HBase</li>
+<li>MongoDB</li>
+</ul>
+</li>
+<li>电商场景解决方案<img src="1580133771032.png" alt="1580133771032"></li>
+</ul>
+<p><img src="1580133718517.png" alt="1580133718517"></p>
+<h2 id="1-2Redis简介"><a href="#1-2Redis简介" class="headerlink" title="1.2Redis简介"></a>1.2Redis简介</h2><ul>
+<li><p>Redis (Remote Dictionary Server)是一个<strong>开源</strong>的高性能<strong>键值对(key-value) 数据库</strong></p>
+</li>
+<li><p>特征</p>
+<ul>
+<li>数据间没有必然的关联关系</li>
+<li>内部<strong>采用单线程机制</strong>进行工作</li>
+<li>高性能。官方提供测试数据, 50个并发执行100000个请求读的速度是110000次/s，写的速度是81000次/s。</li>
+<li>多数据类型支持<ul>
+<li>字符串类型——string</li>
+<li>列表类型——list</li>
+<li>散列类型——hash</li>
+<li>集合类型——set</li>
+<li>有序集合类型——sorted_set</li>
+</ul>
+</li>
+<li>持久化支持。可以进行数据灾难恢复（不是主要功能）</li>
+</ul>
+</li>
+<li><p>应用</p>
+<ul>
+<li>为<strong>热点数据加速查询</strong>(主要场景)， 如热点商品、热点新闻、热点资讯、推广类等高访问量信息等</li>
+<li>任务队列，如秒杀、抢购、购票排队等</li>
+<li>即时信息查询，如各位排行榜、各类网站访问统计、公交到站信息、在线人数信息(聊天室、网站)、设备信号等</li>
+<li>时效性信息控制，如验证码控制、投票控制等</li>
+<li>分布式数据共享，如分布式集群架构中的session分离</li>
+<li>消息队列</li>
+<li>分布式锁</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-3Redis下载-安装"><a href="#1-3Redis下载-安装" class="headerlink" title="1.3Redis下载/安装"></a>1.3Redis下载/安装</h2><ul>
+<li><p>Windows：<code>Redis-x64-3.2.100.zip</code></p>
+</li>
+<li><p>绿色版，解压即可</p>
+</li>
+<li><p>解压文件</p>
+<ul>
+<li>核心文件<ul>
+<li><code>redis-server.exe</code>——服务器启动命令</li>
+<li><code>redis-cli.exe</code>——命令行客户端</li>
+<li><code>redis.windows.conf</code>——redis核心配置文件</li>
+<li><code>redis-benchmarkexe</code>——性能测试工具</li>
+<li><code>redis-check- aof.exe</code>——AOF文件修复工具</li>
+<li><code>redis-check-dump.exe</code>——RDB文件检查工具(快照持久化文件)</li>
+</ul>
+</li>
+</ul>
+<p><img src="1580178215132.png" alt="1580178215132"></p>
+</li>
+<li><p>Redis启动</p>
+<p><img src="1580178483039.png" alt="1580178483039"></p>
+</li>
+</ul>
+<h2 id="1-4Redis的基本操作"><a href="#1-4Redis的基本操作" class="headerlink" title="1.4Redis的基本操作"></a>1.4Redis的基本操作</h2><h3 id="1-4-1信息添加"><a href="#1-4-1信息添加" class="headerlink" title="1.4.1信息添加"></a>1.4.1信息添加</h3><ul>
+<li><p>功能:设置key，value数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set key value</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="1-4-2信息添加"><a href="#1-4-2信息添加" class="headerlink" title="1.4.2信息添加"></a>1.4.2信息添加</h3><ul>
+<li><p>功能:根据key查询对应的value,如果不存在,返回空(nil)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get key</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="1-4-3清除屏幕信息"><a href="#1-4-3清除屏幕信息" class="headerlink" title="1.4.3清除屏幕信息"></a>1.4.3清除屏幕信息</h3><ul>
+<li><p>功能:清除屏幕中的信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="1-4-4帮助信息"><a href="#1-4-4帮助信息" class="headerlink" title="1.4.4帮助信息"></a>1.4.4帮助信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">help [CMD]</span><br></pre></td></tr></table></figure>
+
+<p><img src="1580179481797.png" alt="1580179481797"></p>
+<h3 id="1-4-5退出客户端命令行模式"><a href="#1-4-5退出客户端命令行模式" class="headerlink" title="1.4.5退出客户端命令行模式"></a>1.4.5退出客户端命令行模式</h3><ul>
+<li><p>功能:退出客户端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">quit</span><br><span class="line">exit </span><br><span class="line">&lt;ESC&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="1-5Redis数据类型"><a href="#1-5Redis数据类型" class="headerlink" title="1.5Redis数据类型"></a>1.5Redis数据类型</h2><ul>
+<li><code>Redis</code>自身是一个Map，其中所有的数据都是采用<code>key：value</code>的形式存储</li>
+<li><strong>数据类型</strong>指的是<strong>value的类型【存储的数据类型】</strong>，<strong>key部分永远都是字符串</strong></li>
+</ul>
+<p><img src="1580180268005.png" alt="1580180268005"></p>
+<ul>
+<li>Redis数据类型(5种常用）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Redis</th>
+<th>类比Java</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>String</td>
+</tr>
+<tr>
+<td>hash</td>
+<td>HashMap</td>
+</tr>
+<tr>
+<td>list</td>
+<td>LinkedList</td>
+</tr>
+<tr>
+<td>set</td>
+<td>HashSet</td>
+</tr>
+<tr>
+<td>sorted_set</td>
+<td>TreeSet</td>
+</tr>
+</tbody></table>
+<h3 id="1-5-1String类型"><a href="#1-5-1String类型" class="headerlink" title="1.5.1String类型"></a>1.5.1String类型</h3><ul>
+<li>存储的数据：单个数据，最简单的数据存储类型，也是最常用的数据存储类型</li>
+<li>存储数据的格式：一个存储空间保存一个数据</li>
+<li>存储内容：通常使用字符串，如果字符串以整数的形式展示，可以作为数字操作使用</li>
+</ul>
+<p><img src="1580205552862.png" alt="1580205552862"></p>
+<ul>
+<li><p>添加/修改数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set key value</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">del key</span><br><span class="line"># (integer) 0 删除失败</span><br><span class="line"># (integer) 1 删除成功</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加/修改多个数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mset key1 value1 key2 value2 ..</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取多个数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mget key1 key2 ..</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588406142155.png" alt="1588406142155"></p>
+</li>
+<li><p>获取数据字符个数（字符串长度）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">strlen key</span><br><span class="line"># (integer) [N长度]</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588406184745.png" alt="1588406184745"></p>
+</li>
+<li><p>追加信息到原始信息后部（如果原始信息存在则追加，否则新建）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">append key value</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li><p>数据操作不成功的反馈与数据正常操作之间的差异<br>①表示运行结果是否成功</p>
+<ul>
+<li>(integer)0 →false 失败</li>
+<li>(integer)1 →true成功</li>
+</ul>
+<p>②表示运行结果值</p>
+<ul>
+<li>(integer)3 →3    3个</li>
+<li>(integer)1 →1    1个</li>
+</ul>
+</li>
+<li><p>数据未获取到——(nil)等同于null</p>
+</li>
+<li><p>数据最大存储量——512MB</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="应用场景1"><a href="#应用场景1" class="headerlink" title="应用场景1"></a>应用场景1</h4><ul>
+<li><p>大型企业级应用中，分表操作是基本操作，使用多张表存储同类型数据，但是对应的主键id必须保证统一性, 不能重复。MySQL数据库并不具有类似的机制，那么如何解决?</p>
+<p><img src="1588408646800.png" alt="1588408646800"></p>
+<ul>
+<li><p><strong>答：Redis用于控制数据库表主键id，为数据库表主键提供生成策略，保障数据库表的主键唯一性。此方案适用于所有数据库，且支持数据库集群</strong></p>
+<ul>
+<li><p>设置数值数据增加指定范围的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">incr key</span><br><span class="line">incrby key increment			[increment可以为负]</span><br><span class="line">incrbyfloat key increment</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置数值数据减少指定范围的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">decr key</span><br><span class="line">decrby key increment</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li>String在Redis内部存储默认就是一个字符串，当遇到增减类操作incr，decr时会转成数值型进行计算</li>
+<li>redis所有的操作都是原子性的，采用单线程处理所有业务，命令是一个一个执行的，因此无需考虑并发带来的数据影响。</li>
+<li>注意:按数值进行操作的数据，如果原始数据不能转成数值，或超越了redis数值上限范围，将报错。【9223372036854775807（Java中Long型数据最大值，Long.MAX_VALUE）】</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="应用场景2"><a href="#应用场景2" class="headerlink" title="应用场景2"></a>应用场景2</h4><ul>
+<li><p>微信每4小时只能投1票/商品热门期维持3天自动取消热门/自动控制热点新闻的时效性</p>
+<ul>
+<li><p><strong>答：Redis控制数据的生命周期，通过数据是否失效控制业务行为，适用于所有具有时效性限定控制的操作</strong></p>
+</li>
+<li><p>设置数据具有指定的生命周期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setex key seconds value</span><br><span class="line">psetex key milliseconds value</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 超时则抹去Id，存在则禁止重复投票</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="1588409243264.png" alt="1588409243264"></p>
+</li>
+</ul>
+<h4 id="应用场景3"><a href="#应用场景3" class="headerlink" title="应用场景3"></a>应用场景3</h4><ul>
+<li><p>高频访问信息显示控制，例如新浪微博大V主页显示粉丝数与微博数量</p>
+<ul>
+<li><p>在redis中为大V用户设定用户信息，以用户主键和属性值作为key，后台设定定时刷新策略即可</p>
+<ul>
+<li>数据库中的热点数据命名惯例【大部分数据还是从数据库中来】</li>
+</ul>
+<p><img src="1580214221673.png" alt="1580214221673"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set user:id:3506728370:fans  12210947</span><br><span class="line">set user:id:3506728370:blogs 6164</span><br><span class="line">set user:id:3506728370:focus 83</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在redis中以json格式存储大V用户信息，定时刷新(也可以使用hash类型)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set user:id:3506728370 &#123;id:3506728370, fans:12210862, blogs:6164, focus:83&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong>答：redis应用于各种结构型和非结构型高热度数据访问加速</strong></p>
+</li>
+</ul>
+<h3 id="1-5-2Hash类型"><a href="#1-5-2Hash类型" class="headerlink" title="1.5.2Hash类型"></a>1.5.2Hash类型</h3><ul>
+<li><p><strong>对象类数据用String类型以json格式存储，如果具有较频繁的更新需求操作会显得笨重</strong></p>
+<p><img src="1588411271044.png" alt="1588411271044"></p>
+</li>
+<li><p>新的存储需求：对一系列存储的数据进行编组，方便管理，<strong>典型应用是存储对象信息</strong></p>
+</li>
+<li><p>需要的存储结构: <strong>一个存储空间保存多个键值对数据</strong>【感觉就像是Map套Map】</p>
+<p><img src="1580214384748.png" alt="1580214384748"></p>
+</li>
+<li><p>hash类型：底层使用<strong>哈希表</strong>结构实现数据存储</p>
+<p> <img src="1580214490752.png" alt="1580214490752"></p>
+<blockquote>
+<ul>
+<li>如果field数量较少，存储结构优化为类数组结构</li>
+<li>如果field数量较多，存储结构使用HashMap结构</li>
+</ul>
+</blockquote>
+</li>
+<li><p>添加/修改数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hset key field value</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hget key field</span><br><span class="line">hgetall key</span><br><span class="line">hkeys key		[获取的到的field字段]</span><br><span class="line">hvals key		[获取的到的value字段]</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588411695151.png" alt="1588411695151"></p>
+</li>
+<li><p>删除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdel key field1 [field2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加/修改多个数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hmset key field1 value1 field2 val</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取多个数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hmget key field1 field2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取哈希表中字段的数量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hlen key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取哈希表中是否存在指定的字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexists key field</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588411806322.png" alt="1588411806322"></p>
+</li>
+<li><p>设置指定字段的数值数据增加指定范围的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hincrby key field increment</span><br><span class="line">hincrbyfloat key field increment</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不存在则添加，否则不变</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hsetnx key field value</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>hash类型下的value只能存储字符串，不允许存储其他数据类型，不存在嵌套现象。如果数据未获取到，对应的值为(nil)</li>
+<li>每个hash可以存储23^2-1个键值对</li>
+<li><strong>hash类型十分贴近对象的数据存储形式，并且可以灵活添加删除对象属性</strong>。但hash设计初衷不是为了存储大量对象而设计的，切记不可滥用，不可以将hash作为对象列表使用</li>
+<li>hgetall操作可以获取全部属性，如果内部field过多，遍历整体数据效率就很会低，有可能成为数据访问瓶颈</li>
+</ul>
+</li>
+</ul>
+<h4 id="应用场景4"><a href="#应用场景4" class="headerlink" title="应用场景4"></a>应用场景4</h4><ul>
+<li><p>电商网站购物车设计与实现</p>
+<p><img src="1580216111249.png" alt="1580216111249"></p>
+<ul>
+<li><p><strong>问题：</strong>当前仅仅是将数据存储到了redis中，并没有起到加速的作用，商品信息还需要根据商品id二次查询商品信息的数据库</p>
+</li>
+<li><p><strong>方案：</strong>每条购物车中的商品记录保存成两条field</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">field1专用于保存购买数量</span><br><span class="line">命名格式:商品id:nums</span><br><span class="line">保存数据:数值</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">field2专用于保存购物车中显示的信息，包含文字描述，图片地址，所属商家信息等</span><br><span class="line">命名格式:商品id:info</span><br><span class="line">保存数据: json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>问题：</strong>商品id:info将因为用户购买相同商品，而重复大量的商品信息</p>
+</li>
+<li><p><strong>方案：</strong>将商品信息单独做成hash</p>
+</li>
+<li><p><strong>问题：</strong>我们一开始不能将所有商品信息都导入Redis，但是用一个加一个则与之前没有区别</p>
+</li>
+<li><p>方案：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hsetnx key field value</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong>答：应用于购物车数据存储设计</strong></p>
+</li>
+</ul>
+<h4 id="应用场景5"><a href="#应用场景5" class="headerlink" title="应用场景5"></a>应用场景5</h4><ul>
+<li><p>双11活动日,销售手机充值卡的商家对移动、联通、电信的30元、50元、 100元商品推出抢购活动，每种商<br>品抢购上限1000张</p>
+<p><img src="1588413458917.png" alt="1588413458917"></p>
+</li>
+<li><p><strong>答：redis应用于抢购，限购类、限量发放优惠卷、激活码等业务的数据存储设计</strong></p>
+</li>
+</ul>
+<h4 id="补充：String存储对象（Json）-VS-Hash存储对象"><a href="#补充：String存储对象（Json）-VS-Hash存储对象" class="headerlink" title="补充：String存储对象（Json） VS Hash存储对象"></a>补充：String存储对象（Json） VS Hash存储对象</h4><ul>
+<li><p>String存在对象讲究整体性，以读为主</p>
+</li>
+<li><p>Hash存储对象讲究分散性，以写为主</p>
+</li>
+</ul>
+<h3 id="1-5-3List类型"><a href="#1-5-3List类型" class="headerlink" title="1.5.3List类型"></a>1.5.3List类型</h3><ul>
+<li><p>数据存储需求：存储多个数据，并对数据进入存储空间的顺序进行区分</p>
+</li>
+<li><p>需要的存储结构：一个存储空间保存够个数据，且通过数据可以体现进入顺序</p>
+</li>
+<li><p>list类型：保存多个数据，底层使用<strong>双向链表存储结构</strong>实现</p>
+<p><img src="1580217854615.png" alt="1580217854615"></p>
+<p><img src="1588414055584.png" alt="1588414055584"></p>
+</li>
+<li><p>添加/修改数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lpush key value1 [value2] ....</span><br><span class="line">rpush key value1 [value2] ....</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lrange key start stop</span><br><span class="line">lindex key index</span><br><span class="line">llen key</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588413931788.png" alt="1588413931788"></p>
+</li>
+<li><p>获取并移除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lpop key</span><br><span class="line">rpop key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>规定时间内获取并移除数据【规定时间内阻塞 队列中有就移除 没有就算了】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">blpop key1 [key2] timeout		[block]</span><br><span class="line">brpop key1 [key2] timeout</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>移除指定数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lrem key count value</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>list中保存的数据都是string类型的，数据总容量是有限的，最多23^2- 1个元素(4294967295)</li>
+<li>list具有索引的概念，但是操作数据时通常以队列的形式进行入队出队操作，或以栈的形式进行入栈出栈操作</li>
+<li>获取全部数据操作结束索引设置为-1</li>
+<li>list可以对数据进行分页操作，通常第一页的信息来自于list, 第2页及更多的信息通过数据库的形式加载</li>
+</ul>
+</li>
+</ul>
+<h4 id="应用场景6"><a href="#应用场景6" class="headerlink" title="应用场景6"></a>应用场景6</h4><ul>
+<li>微信朋友圈点赞，要求按照点赞顺序显示点赞好友信息如果取消点赞，移除对应好友信息</li>
+<li><strong>答：redis应用于具有操作先后顺序的数据控制</strong></li>
+</ul>
+<h4 id="应用场景7"><a href="#应用场景7" class="headerlink" title="应用场景7"></a>应用场景7</h4><ul>
+<li>twitter、新浪微博、腾讯微博中个人用户的关注列表需要按照用户的关注顺序进行展示,粉丝列表需要将最近关注的粉丝列在前面</li>
+<li>新闻、资讯类网站如何将最新的新闻或资讯按照发生的时间顺序展示</li>
+<li>企业运营过程中,系统将产生出大量的运营数据,如何保障多台服务器操作日志的统一顺序输出</li>
+<li><strong>答：redis应用于依赖list的数据具有顺序的特征对信息进行管理，使用队列模型解决多路信息汇总合并的问题，使用栈模型解决最新消息的问题</strong></li>
+</ul>
+<h3 id="1-5-5Set类型"><a href="#1-5-5Set类型" class="headerlink" title="1.5.5Set类型"></a>1.5.5Set类型</h3><ul>
+<li>新的存储需求：存储大量的数据，<strong>在查询方面提供更高的效率</strong></li>
+<li>需要的存储结构：能够保存大量的数据，高效的内部存储机制，便于查询</li>
+<li>set类型：与hash存储结构完全相同，仅存储键，不存储值(nil) ，且值不允许重复的</li>
+</ul>
+<p><img src="1580219557499.png" alt="1580219557499"></p>
+<ul>
+<li><p>添加数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sadd key member1 [member2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取全部数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smembers key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srem key member1 [member2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取集合数据总量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scard key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断集合中是否包含指定数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sismember key member</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588432636898.png" alt="1588432636898"></p>
+</li>
+<li><p>随机获取集合中指定数量的数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srandmember key [count]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>随机获取集合中的某个数据并将该数据移出集合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spop key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>求两个集合的交、并、差集</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sinter key1 [key2]</span><br><span class="line">sunion key1 [key2]</span><br><span class="line">sdiff key1 [key2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>求两个集合的交、并、差集并存储到指定集合中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sinterstore destination key1 [key2]</span><br><span class="line">sunionstore destination key1 [key2]</span><br><span class="line">sdiffstore destination key1 [key2]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将指定数据从原始集合中移动到目标集合中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smove source destination member</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>set类型不允许数据重复，如果添加的数据在set中已经存在，将只保留一份</li>
+<li>set虽然与hash的存储结构相同，但是无法启用hash中存储值的空间</li>
+</ul>
+</li>
+</ul>
+<h4 id="应用场景8"><a href="#应用场景8" class="headerlink" title="应用场景8"></a>应用场景8</h4><ul>
+<li>后期为了增加用户的活跃度、兴趣点，必须让用户 对其他信息类别逐渐产生兴趣，增加客户留存度，实现随机推送</li>
+<li><strong>答：redis应用于随机推荐类信息检索，例如热点歌单推荐，热点新闻推荐，热卖旅游线路，应用APP推荐，大V推荐等</strong></li>
+</ul>
+<h4 id="应用场景9"><a href="#应用场景9" class="headerlink" title="应用场景9"></a>应用场景9</h4><ul>
+<li><strong>答：redis应用于同类信息的关联搜索，二度关联搜索，深度关联搜索</strong><ul>
+<li>显示共同关注(一度)</li>
+<li>显示共同好友(一度)</li>
+<li>由用户A出发，获取到好友用户B的好友信息列表(一度)</li>
+<li>由用户A出发，获取到好友用户B的购物清单列表(二度)</li>
+<li>由用户A出发，获取到好友用户B的游戏充值列表(二度)</li>
+</ul>
+</li>
+</ul>
+<h4 id="应用场景10"><a href="#应用场景10" class="headerlink" title="应用场景10"></a>应用场景10</h4><ul>
+<li>PV:网站被访问次数，可通过刷新页面提高访问量</li>
+<li>UV:网站被不同用户访问的次数,可通过cookie统计访问量, 相同用户切换IP地址，UV不变</li>
+<li>IP:网站被不同IP地址访问的总次数，可通过IP地址统计访问量，相同IP不同用户访问，IP不变</li>
+<li>建立string类型数据，利用incr统计日访问量(PV)</li>
+<li>建立set模型，记录不同cookie数量(UV)</li>
+<li>建立set模型，记录不同IP数量(IP)</li>
+<li><strong>答：redis应用于同类型数据的快速去重</strong></li>
+</ul>
+<h3 id="1-5-6Sorted-set类型"><a href="#1-5-6Sorted-set类型" class="headerlink" title="1.5.6Sorted_set类型"></a>1.5.6Sorted_set类型</h3><ul>
+<li><p>新的存储需求：数据排序有利于数据的有效展示，需要提供一种可以根据自身特征进行排序的方式</p>
+</li>
+<li><p>需要的存储结构：新的存储模型，<strong>可以保存可排序的数据</strong></p>
+</li>
+<li><p>sorted_set类型：在set的存储结构基础上添加可排序字段</p>
+<p><img src="1580223454856.png" alt="1580223454856"></p>
+</li>
+<li><p>添加数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zadd key score1 memberl [score2 member2 ]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取全部数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zrange key start stop [WITHSCORES]</span><br><span class="line">zrevrange key start stop [WITHSCORES]</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588470818167.png" alt="1588470818167"></p>
+</li>
+<li><p>删除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zrem key member [member ...]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>按条件获取数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zrangebyscore key min max [WITHSCORES] [LIMIT OFFSET COUNT]</span><br><span class="line">zrevrangebyscore key max min [WITHSCORES]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>条件删除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zremrangebyrank key start stop</span><br><span class="line">zremrangebyscore key min max</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意:</p>
+<ul>
+<li>min与max用于限定搜索查询的条件</li>
+<li>start与stop用于限定查询范围，作用于索引，表示开始和结束索引</li>
+<li>offset与count用于限定查询范围，作用于查询结果，表示开始位置和数据总量</li>
+</ul>
+</li>
+<li><p>获取集合数据总量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zcard key</span><br><span class="line">zcount key min max</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>集合交、并操作【默认合并相加】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zinterstore destination numkeys key [key ...]</span><br><span class="line">zunionstore destination numkeys key [key . ..]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取数据对应的索引(排名)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zrank key member</span><br><span class="line">zrevrank key member</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>score值获取与修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zscore key member</span><br><span class="line">zincrby key increment member</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>score保存的数据存储空间是64位，如果是整数范围是-9007199254740992~9007199254740992</li>
+<li>score保存的数据也可以是一个双精度的double值，基于双精度浮点数的特征，可能会丢失精度，使用时候要慎重</li>
+<li>sorted_set底层存储还是基于set结构的，因此<strong>数据不能重复</strong>，如果重复添加相同的数据，score值将被反复覆盖，保留最后一次修改的结果</li>
+</ul>
+</li>
+</ul>
+<h4 id="业务场景11"><a href="#业务场景11" class="headerlink" title="业务场景11"></a>业务场景11</h4><ul>
+<li>票选广东十大杰出青年，各类综艺选秀海选投票</li>
+<li>各类资源网站TOP10(电影，歌曲，文档，电商，游戏等)</li>
+<li>聊天室活跃度统计</li>
+<li>游戏好友亲密度</li>
+<li><strong>答：redis应用于计数器组合排序功能对应的排名</strong></li>
+</ul>
+<h4 id="业务场景12"><a href="#业务场景12" class="headerlink" title="业务场景12"></a>业务场景12</h4><ul>
+<li><p>网站会定期开启投票、讨论，限时进行，逾期作废。如何有效管理此类过期信息。</p>
+</li>
+<li><p><strong>答：redis 应用于定时任务执行顺序管理或任务过期管理</strong></p>
+</li>
+</ul>
+<h2 id="1-6Redis通用命令"><a href="#1-6Redis通用命令" class="headerlink" title="1.6Redis通用命令"></a>1.6Redis通用命令</h2><h3 id="1-6-1Key通用命令"><a href="#1-6-1Key通用命令" class="headerlink" title="1.6.1Key通用命令"></a>1.6.1Key通用命令</h3><ul>
+<li><p><strong>key是一个字符串</strong>， 通过key获取redis中保存的数据</p>
+</li>
+<li><p>获取key的类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取key是否存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exists key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除指定key</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">del key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为指定key设置有效期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">expire key seconds</span><br><span class="line">pexpire key milliseconds</span><br><span class="line">expireat key timestamp 					[时间戳的形式 time命令获取]</span><br><span class="line">pexpireat key milliseconds-timestamp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取key的有效时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ttl key</span><br><span class="line"># (integer) -2 过期</span><br><span class="line"># (integer) -1 没设置有效期</span><br><span class="line"># (integer) N  有效期</span><br><span class="line">pttl key</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换key从时效性转换为永久性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">persist key</span><br><span class="line"># (integer) 0  失败</span><br><span class="line"># (integer) 1  成功</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询key</p>
+<blockquote>
+<p>* 匹配任意数量的任意符号<br>? 配合一个任意符号<br>[] 匹配个指定符</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keys [pattern]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">keys * 			查询所有</span><br><span class="line">keys it *		查询所有以it开头</span><br><span class="line">keys *heima		查询所有以he ima结尾</span><br><span class="line">keys ??heima	查 询所有前面两个字符任意，后面以he ima结尾</span><br><span class="line">keys user:?		查询所有以user:开头，最后一个字符任意</span><br><span class="line">keys u[st]er:1 	查询所有以u开头，以er:1结尾， 中间包含一个字母，s或t</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为key改名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rename key newkey		[可能覆盖同名key]</span><br><span class="line">renamenx key newkey		[不会覆盖同名key]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对所有key排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sort key	[只排序不保存]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其他key通用操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">help @generic</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">config set requirepass &lt;password&gt; </span><br><span class="line">config get requirepass</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>客户端发送命令设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">requirepass &lt;password&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动客户端设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli –a &lt;password&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+<h3 id="1-6-2数据库通用命令"><a href="#1-6-2数据库通用命令" class="headerlink" title="1.6.2数据库通用命令"></a>1.6.2数据库通用命令</h3><ul>
+<li><p>redis为<strong>每个服务提供有16个数据库，编号从0到15</strong>【默认使用select 0】</p>
+</li>
+<li><p>每个数据库之间的数据相互独立</p>
+<p><img src="1580294591592.png" alt="1580294591592"></p>
+<blockquote>
+<p>没有大小 共有同一空间</p>
+</blockquote>
+</li>
+<li><p>测试服务器是否连通</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588477361997.png" alt="1588477361997"></p>
+</li>
+<li><p>切换数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select [index]</span><br></pre></td></tr></table></figure>
+
+<p><img src="1588477302443.png" alt="1588477302443"></p>
+</li>
+<li><p>数据移动</p>
+<ul>
+<li>目标数据库必须不存在才能成功</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">move key dbindex</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据清除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dbsize		[查看key数量]</span><br><span class="line">flushdb		[删除本库]	</span><br><span class="line">flushall	[删除所有0-15库]</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>自动重写</p>
+<ul>
+<li><p>自动重写触发条件设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto-aof-rewrite-min-size [size] </span><br><span class="line">auto-aof-rewrite-percentage [percentage]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动重写触发比对参数（ 运行指令info Persistence获取具体信息 ）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aof_current_size</span><br><span class="line">aof_base_size</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动重写触发条件</p>
+<p><img src="1588585553364.png" alt="1588585553364"></p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>s的高可用，同时实现数据<strong>冗余备份</strong>。</p>
+<ul>
+<li>提供数据方：master 主服务器，主节点，主库，主客户端</li>
+<li>接收数据方：slave 从服务器，从节点，从库，从客户端</li>
+<li>需要解决的问题： 数据同步</li>
+<li>核心工作： master的数据复制到slave中</li>
+</ul>
+<p><a href="1588729303276.png">1588729303276</a></p>
+</li>
+<li><p>主从复制</p>
+<ul>
+<li>主从复制即将master中的数据即时、有效的复制到slave中</li>
+<li>特征：一个master可以拥有多个slave，一个slave只对应一个master </li>
+<li>职责：<ul>
+<li>master:①写数据 ②执行写操作时，将出现变化的数据自动同步到slave ③读数据（可忽略）</li>
+<li>slave:①读数据 ②写数据（禁止）</li>
+</ul>
+</li>
+<li>作用<ul>
+<li>读写分离：master写、slave读，提高服务器的读写负载能力</li>
+<li>负载均衡：基于主从结构，配合读写分离，由slave分担master负载，并根据需求的变化，改变slave的数量，通过多个从节点分担数据读取负载，大大提高Redis服务器并发量与数据吞吐量</li>
+<li>故障恢复：当master出现问题时，由slave提供服务，实现快速的故障恢复</li>
+<li>数据冗余：实现数据热备份，是持久化之外的一种数据冗余方式</li>
+<li>高可用基石：基于主从复制，构建哨兵模式与集群，实现Redis的高可用方案</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="post-copyright"><blockquote><p>原文作者: 掘金木匠</p><p>原文链接: <a href="http://goldcarpenter.github.io/2020/03/26/Redis_Part1/">http://goldcarpenter.github.io/2020/03/26/Redis_Part1/</a></p><p>版权声明: 转载请注明出处(必须保留作者署名及链接)</p></blockquote></div><div class="tags"><a href="/tags/Redis/">Redis</a></div><div class="post-share"><div class="social-share"><span>分享到:</span></div></div><div class="post-nav"><a href="/2020/03/29/Nginx%E5%9F%BA%E7%A1%80/" class="pre">Nginx</a><a href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part3/" class="next">JDK8新特性</a></div><div id="comments"><div id="SOHUCS" sid="2020/03/26/Redis_Part1/"></div></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0-架构"><span class="toc-text">0.架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Redis"><span class="toc-text">1.Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1NoSQL介绍"><span class="toc-text">1.1NoSQL介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2Redis简介"><span class="toc-text">1.2Redis简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3Redis下载-安装"><span class="toc-text">1.3Redis下载&#x2F;安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4Redis的基本操作"><span class="toc-text">1.4Redis的基本操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-1信息添加"><span class="toc-text">1.4.1信息添加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-2信息添加"><span class="toc-text">1.4.2信息添加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-3清除屏幕信息"><span class="toc-text">1.4.3清除屏幕信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-4帮助信息"><span class="toc-text">1.4.4帮助信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-5退出客户端命令行模式"><span class="toc-text">1.4.5退出客户端命令行模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5Redis数据类型"><span class="toc-text">1.5Redis数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-1String类型"><span class="toc-text">1.5.1String类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景1"><span class="toc-text">应用场景1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景2"><span class="toc-text">应用场景2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景3"><span class="toc-text">应用场景3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-2Hash类型"><span class="toc-text">1.5.2Hash类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景4"><span class="toc-text">应用场景4</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景5"><span class="toc-text">应用场景5</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#补充：String存储对象（Json）-VS-Hash存储对象"><span class="toc-text">补充：String存储对象（Json） VS Hash存储对象</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-3List类型"><span class="toc-text">1.5.3List类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景6"><span class="toc-text">应用场景6</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景7"><span class="toc-text">应用场景7</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-5Set类型"><span class="toc-text">1.5.5Set类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景8"><span class="toc-text">应用场景8</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景9"><span class="toc-text">应用场景9</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景10"><span class="toc-text">应用场景10</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-6Sorted-set类型"><span class="toc-text">1.5.6Sorted_set类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#业务场景11"><span class="toc-text">业务场景11</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#业务场景12"><span class="toc-text">业务场景12</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-6Redis通用命令"><span class="toc-text">1.6Redis通用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-1Key通用命令"><span class="toc-text">1.6.1Key通用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-2数据库通用命令"><span class="toc-text">1.6.2数据库通用命令</span></a></li></ol></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/17/Redis_Part3/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Redis_Part2/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/29/Nginx%E5%9F%BA%E7%A1%80/">Nginx</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/26/Redis_Part1/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part3/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part2/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/25/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part1/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/02/javaIO/">JavaIO</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/21/ThreadLocal/">ThreadLocal总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/19/SpringMVC_Part3/">SpringMVC</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Debug%E8%AE%B0%E5%BD%95/">Debug记录</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E9%AB%98%E7%BA%A7/">Java高级</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL%E5%9F%BA%E7%A1%80/">MySQL基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E5%BC%80%E5%8F%91/">Web开发</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 15px;">注解</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/%E5%86%85%E9%83%A8%E7%B1%BB/" style="font-size: 15px;">内部类</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/ThreadLocal/" style="font-size: 15px;">ThreadLocal</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 15px;">多线程</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/IEDA/" style="font-size: 15px;">IEDA</a> <a href="/tags/Redis/" style="font-size: 15px;">Redis</a> <a href="/tags/SpringMVC/" style="font-size: 15px;">SpringMVC</a> <a href="/tags/MyBatis/" style="font-size: 15px;">MyBatis</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">34</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> 友情链接</i></div><ul></ul><a href="http://www.scu.edu.cn/" title="四川大学首页" target="_blank">四川大学首页</a><ul></ul><a href="http://www.scu.edu.cn/" title="个人项目——待完善" target="_blank">个人项目——待完善</a><ul></ul><a href="http://www.scu.edu.cn/" title="个人项目——待完善" target="_blank">个人项目——待完善</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅本站</a> |  <a href="/about/">联系博主</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">掘金木匠.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.4"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.4" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script><script>window._config = { showScore: true };
+(function(){ 
+  var appid = 'cyuBR2wWE'; 
+  var conf = 'cbd82aee65d05c481319a299102b4811'; 
+  var width = window.innerWidth || document.documentElement.clientWidth; 
+  var nodes =document.getElementsByTagName("head")[0]||document.head||document.documentElement;
+  if (/(Android|iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) && width < 750) {  
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+  }
+  else { 
+    var loadJs=function(d,a){
+      var b=document.createElement("script");b.setAttribute("type","text/javascript");
+      b.setAttribute("charset","UTF-8");
+      b.setAttribute("src",d);
+      if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}
+      nodes.appendChild(b)
+    };
+    loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); 
+  } 
+  var loadCss = function(cssString){  
+    var style=document.createElement("style");  
+    style.setAttribute("type", "text/css");  
+    if(style.styleSheet){// IE  
+        style.styleSheet.cssText = cssString;  
+    } else {// w3c  
+        var cssText = document.createTextNode(cssString);  
+        style.appendChild(cssText);  
+    }
+    nodes.appendChild(style);
+  }
+  //- window.onload=function(){
+  //-   if(window.outerWidth<=775){
+  //-     loadCss('.module-hot-topic,.module-cmt-float-bar{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .cbox-prompt-w span.prompt-empty-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w .form-text-w span.text-null,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w a.comment-link-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w span.comment-text-w,#SOHUCS #SOHU_MAIN .module-cmt-footer .section-service-w div.service-wrap-w a:hover,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w span.wrap-name-w,#SOHUCS #SOHU_MAIN .module-cmt-list .action-click-gw span.click-disable-eg a em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li div.title-name-gw,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number .comment-number span.cy-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number span.comment-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active,#SOHUCS #SOHU_MAIN .module-cmt-list .msg-wrap-gw .wrap-action-gw .action-click-gw span a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .picture-box-gw div.box-action-gw a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-action-gw .action-click-gw span a:hover em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-user-gw span.user-name-gw a{color:#40759b!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-r,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-l,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-r{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-l{background:#FFF!important;top:-2px!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-function-w .uploading-wrapper-dw div.wrapper-image-dw,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-main,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w div.form-text-w,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-list .module-cmt-box .post-wrap-w div.post-wrap-main{border:1px solid #e6e6e6!important;border-radius:20px 20px 20px 20px;margin:0!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw{width:130px!important;height:34px!important;line-height:33px!important;font-size:17px!important;background:#5483b1!important;border-radius:20px!important;color:#FFF!important;-webkit-box-shadow:0 -1px 4px #5483b1 inset;box-shadow:0 -1px 10px #5483b1 inset}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw:before{content:"发表评论"}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a:hover .btn-fw{color:#40759b!important;background:#FFF!important}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li{background:none!important;border-bottom:1px solid #e6e6e6}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active{border:1px solid #e6e6e6;border-radius:10px 10px 0 0;border-bottom:none}#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li .title-name-gw div.title-name-gw-tag{background:#5483b1!important;border-radius:3px}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type div.cmt-list-border{background-color:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item{border:1px solid #e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo{text-align:center;line-height:40px;border-radius:50%!important;background:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo:before{content:"畅";font-size:22px;color:#FFF}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text,#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text i{color:#5483b1!important}#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w{background:#FFF!important}@media screen and (min-width:900px){#SOHUCS #SOHU_MAIN .module-mobile-cmt-list .list-wrapper-wap .list-container-wap .list-item-wap .list-content-wrapper-wap .cmt-list-image-container .cmt-list-image{max-width: 100%;}}');
+  //-   }
+  //- };
+})();
+function removeElement(_element){
+     var _parentElement = _element.parentNode;
+     if(_parentElement){
+            _parentElement.removeChild(_element);
+     }
+}
+var removeAD = document.createElement("div");
+removeAD.id = 'removeAD';
+var adInterval1 = setInterval(function() {
+  if(document.querySelector("#feedAv")){
+    document.querySelector("[node-type=cmt-list]").appendChild(removeAD);
+    document.querySelector("#removeAD").appendChild(document.querySelector("#feedAv"));
+    //- removeElement(document.querySelectorAll("#feedAv")[0]);
+    var feedAv = document.querySelector("#feedAv").children;
+    for( item of feedAv){
+      item.style.display = 'none'
+    }
+    document.querySelector("#removeAD").style.display="none"
+    clearInterval(adInterval1);
+  }
+},1000);
+var adInterval2 = setInterval(function() {
+  if(document.querySelector("#pop_ad")){
+    removeElement(document.querySelector("#pop_ad"));
+    clearInterval(adInterval2);
+  }
+}, 1000);</script><script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script></body></html>

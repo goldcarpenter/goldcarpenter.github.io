@@ -1,0 +1,574 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JJMJ's blog."><meta name="keywords" content="Java, Spring, MyBatis, 后端"><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.4"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.4"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><title>Redis | 掘金木匠</title><meta name="generator" content="Hexo 4.2.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Redis</h1><a id="logo" href="/.">掘金木匠</a><p class="description">懂金融的软件工程师一定是一个合格的吃货</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">Redis</h1><div class="post-meta"><a href="/2020/04/04/Redis_Part2/#comments" class="comment-count"><i id="changyan_count_unit" data-xid="2020/04/04/Redis_Part2/"></i>留言,<i id="changyan_parti_unit" data-xid="2020/04/04/Redis_Part2/"></i>参与</a><p><span class="date">Apr 04, 2020</span><span><a href="/categories/Web%E5%BC%80%E5%8F%91/" class="category">Web开发</a></span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>点击</i></i></span></p></div><div class="post-content"><h1 id="2-Jedis"><a href="#2-Jedis" class="headerlink" title="2.Jedis"></a>2.Jedis</h1><ul>
+<li>Java程序操作Redis的工具<ul>
+<li>Jedis</li>
+<li>SpringData Redis</li>
+<li>Lettuce</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-1Jedis入门程序"><a href="#2-1Jedis入门程序" class="headerlink" title="2.1Jedis入门程序"></a>2.1Jedis入门程序</h2><ul>
+<li><p>pom.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;redis.clients&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jedis&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.9.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JedisTest</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">package top.carpenter;</span><br><span class="line"></span><br><span class="line">import org.junit.Test;</span><br><span class="line">import redis.clients.jedis.Jedis;</span><br><span class="line"></span><br><span class="line">public class JedisTest &#123;</span><br><span class="line">    @Test</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        &#x2F;&#x2F; 1.连接Redis</span><br><span class="line">        Jedis jedis &#x3D; new Jedis(&quot;127.0.0.1&quot;, 6379);</span><br><span class="line">        &#x2F;&#x2F; 2.操作Redis——与终端操作方法一致</span><br><span class="line">        jedis.set(&quot;name&quot;,&quot;carpenter&quot;);</span><br><span class="line">        System.out.println(jedis.get(&quot;name&quot;));</span><br><span class="line">        &#x2F;&#x2F; 3.关闭连接</span><br><span class="line">        jedis.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="2-2Jedis读写redis数据"><a href="#2-2Jedis读写redis数据" class="headerlink" title="2.2Jedis读写redis数据"></a>2.2Jedis读写redis数据</h2><ul>
+<li>案例：服务调用次数控制<ul>
+<li>服务免费开放给企业试用，对试用用户的使用行为进行限速，限制每个用户每分钟最多发起10次调用</li>
+</ul>
+</li>
+<li>案例要求<br>①设定A、B三个用户<br>②A用户限制10次/分调用, B用户限制30次/分调用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> top.carpenter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.Jedis;</span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.exceptions.JedisDataException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Integer EXPAIRTIME = <span class="number">300</span>;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        MyThread mt1 = <span class="keyword">new</span> MyThread(<span class="string">"初级用户"</span>,<span class="keyword">new</span> Integer(<span class="number">10</span>));</span><br><span class="line">        MyThread mt2 = <span class="keyword">new</span> MyThread(<span class="string">"高级用户"</span>,<span class="number">30</span>);</span><br><span class="line">        mt1.start() ;</span><br><span class="line">        mt2.start() ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Service service;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyThread</span><span class="params">(String id,Integer num)</span></span>&#123;</span><br><span class="line">        service = <span class="keyword">new</span> Service(id,num);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            service.service();</span><br><span class="line">             <span class="keyword">try</span>&#123;</span><br><span class="line">                Random r = <span class="keyword">new</span> Random();</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>+ r.nextInt(<span class="number">200</span>));</span><br><span class="line">            &#125;<span class="keyword">catch</span>(InterruptedException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Service</span></span>&#123; </span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> Integer num;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Service</span><span class="params">(String id, Integer num)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.num = num;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 模拟服务内容</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">business</span> <span class="params">(String id, <span class="keyword">long</span> num)</span></span>&#123;</span><br><span class="line">        System.out.println (<span class="string">"用户"</span>+id+<span class="string">"发起业务调用,当前第"</span>+num+<span class="string">"次"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">service</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">        Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">"localhost"</span>,<span class="number">6379</span>);</span><br><span class="line">        String value = jedis.get(<span class="string">"compid:"</span> + id);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 判断值是否存在</span></span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 不存在 则创建该值</span></span><br><span class="line">                jedis.setex(<span class="string">"compid:"</span> + <span class="keyword">this</span>.id,JedisTest.EXPAIRTIME, <span class="string">""</span>+(Long.MAX_VALUE-<span class="keyword">this</span>.num));</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 存在 自增 调用业务</span></span><br><span class="line">                Long val = jedis.incr(<span class="string">"compid:"</span> + id);</span><br><span class="line">                business(id, <span class="keyword">this</span>.num + val - Long.MAX_VALUE);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JedisDataException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"用户: "</span> + id + <span class="string">"使用次数已达上限，请稍后再试或升级VIP会员"</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            jedis.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-3Jedis连接池"><a href="#2-3Jedis连接池" class="headerlink" title="2.3Jedis连接池"></a>2.3Jedis连接池</h2><ul>
+<li><p><code>JedisPool</code>: Jedis提供的连接池技术</p>
+<ul>
+<li><code>poolConfig</code>:连接池配置对象</li>
+<li><code>host</code>:redis服务地址</li>
+<li><code>port</code>:redis服务端口号</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public JedisPool (GenericObjectPoolConfig poolConfig, String host,int port) &#123;</span><br><span class="line">	this(poolConfig, host, port, 2000，(String)null, 0,(String) null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> top.carpenter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.Jedis;</span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.JedisPool;</span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.JedisPoolConfig;</span><br><span class="line"><span class="keyword">import</span> java.util.ResourceBundle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisUtils</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> JedisPool jp = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String host = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> port;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> maxTotal ;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> maxIdle;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        ResourceBundle rb = ResourceBundle.getBundle(<span class="string">"redis"</span> );</span><br><span class="line">        host = rb. getString(<span class="string">"redis.host"</span>);</span><br><span class="line">        port = Integer.parseInt(rb. getString(<span class="string">"redis.port"</span>));</span><br><span class="line">        maxTotal = Integer.parseInt(rb. getString( <span class="string">"redis.maxTotal"</span>));</span><br><span class="line">        maxIdle = Integer. parseInt(rb. getString( <span class="string">"redis.maxIdle"</span>));</span><br><span class="line"></span><br><span class="line">        JedisPoolConfig jpc = <span class="keyword">new</span> JedisPoolConfig();</span><br><span class="line">        jpc.setMaxTotal (maxTotal);</span><br><span class="line">        jpc.setMaxIdle(maxIdle);</span><br><span class="line">        jp = <span class="keyword">new</span> JedisPool(jpc ,host,port);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Jedis <span class="title">getJedis</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> jp.getResource();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+</li>
+</ul>
+<h1 id="3-基于Linux的Redis"><a href="#3-基于Linux的Redis" class="headerlink" title="3.基于Linux的Redis"></a>3.基于Linux的Redis</h1><h2 id="3-1Redis启动"><a href="#3-1Redis启动" class="headerlink" title="3.1Redis启动"></a>3.1Redis启动</h2><ul>
+<li><p>默认配置启动【企业开发不用】</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">redis-server</span><br><span class="line">redis-server --port 6380			[更换端口启动]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis-cli </span><br><span class="line">redis-cli -p 6380					[更换端口启动]</span><br><span class="line">redis-cli -h 127.0.0.1				[更换host]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用配置文件启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-server config&#x2F;redis-6380.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>redis.conf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 以守护进程方式启动，redis将以服务的形式存在，日志不再打印到命令窗口</span></span><br><span class="line">daemonize yes </span><br><span class="line"><span class="meta">#</span><span class="bash"> 设定当前服务启动端口号</span></span><br><span class="line">port 6380</span><br><span class="line"><span class="meta">#</span><span class="bash"> 设定当前服务文件保存位置，包含日志文件、持久化文件(后面详细讲解)等</span></span><br><span class="line">dir "/[自定义目录]/redis/data"</span><br><span class="line"><span class="meta">#</span><span class="bash">设定日志文件名，便于查阅</span></span><br><span class="line">logfile "***.log ”</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件</p>
+<ul>
+<li><code>dbfilename dump.rdb</code>说明：设置本地数据库文件名，默认值为 dump.rdb <ul>
+<li>经验：通常设置为<code>dump-端口号.rdb</code></li>
+</ul>
+</li>
+<li><code>dir</code>说明：设置存储.rdb文件的路径 <ul>
+<li>经验：通常设置成存储空间较大的目录中，目录名称data</li>
+</ul>
+</li>
+<li><code>rdbcompression yes</code> 说明：设置存储至本地数据库时是否压缩数据，默认为 yes，采用 LZF 压缩 <ul>
+<li>经验：通常默认为开启状态，如果设置为no，可以节省 CPU 运行时间，但会使存储的文件变大（巨大）</li>
+</ul>
+</li>
+<li><code>rdbchecksum yes</code>说明：设置是否进行RDB文件格式校验，该校验过程在写文件和读文件过程均进行<ul>
+<li>经验：通常默认为开启状态，如果设置为no，可以节约读写性过程约10%时间消耗，但是存储一定的数据损坏风险</li>
+</ul>
+</li>
+<li><code>stop-writes-on-bgsave-error yes</code>说明：后台存储过程中如果出现错误现象，是否停止保存操作 <ul>
+<li>经验：通常默认为开启状态</li>
+</ul>
+</li>
+<li><code>appendonly yes|no</code>说明：是否开启AOF持久化功能<ul>
+<li>默认为不开启状态</li>
+</ul>
+</li>
+<li><code>appendfsync always|everysec|no</code> 说明：AOF写数据策略</li>
+<li><code>appendfilename filename</code>说明：AOF持久化文件名，默认文件名<code>appendonly.aof</code><ul>
+<li>建议配置为<code>appendonly-端口号.aof</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="4-Redis持久化"><a href="#4-Redis持久化" class="headerlink" title="4.Redis持久化"></a>4.Redis持久化</h1><ul>
+<li><p>什么是持久化</p>
+<ul>
+<li><strong>利用永久性存储介质将数据进行保存</strong>，在特定的时间<strong>将保存的数据进行恢复</strong>的工作机制称为持久化</li>
+</ul>
+</li>
+<li><p>为什么要进行持久化</p>
+</li>
+<li><p>防止数据的意外丢失，确保数据安全性</p>
+</li>
+<li><p>持久化过程保存什么</p>
+<ul>
+<li>将<strong>当前数据状态进行保存</strong>，快照形式，存储数据结果，存储格式简单，关注点在数据</li>
+<li>将数据的<strong>操作过程进行保存</strong>，日志形式，存储操作过程，存储格式复杂，关注点在数据的操作过程</li>
+</ul>
+<p><img src="1580311093979.png" alt="1580311093979"></p>
+</li>
+</ul>
+<h2 id="4-1RDB方案"><a href="#4-1RDB方案" class="headerlink" title="4.1RDB方案"></a>4.1RDB方案</h2><h3 id="4-1-1RDB启动方式——save指令"><a href="#4-1-1RDB启动方式——save指令" class="headerlink" title="4.1.1RDB启动方式——save指令"></a>4.1.1RDB启动方式——save指令</h3><ul>
+<li><p>手动执行一次保存操作</p>
+<p><img src="1588579168526.png" alt="1588579168526"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">save</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>本地生成<code>***.rdb</code>的文件，保存生产的快照信息</p>
+</blockquote>
+</li>
+<li><p>注意: save指令的执行会阻塞当前Redis服务器，直到当前RDB过程完成为止，有可能会造成长时间阻塞，<strong>线上环境不建议使用。</strong></p>
+</li>
+</ul>
+<h3 id="4-1-2RDB启动方式-——-bgsave指令命令"><a href="#4-1-2RDB启动方式-——-bgsave指令命令" class="headerlink" title="4.1.2RDB启动方式 —— bgsave指令命令"></a>4.1.2RDB启动方式 —— bgsave指令命令</h3><ul>
+<li><p>手动启动后台保存操作，但不是立即执行</p>
+<p><img src="1588580713240.png" alt="1588580713240"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bgsave</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意: bgsave命令是针对save阻塞问题做的优化。Redis内部所有涉及到RDB操作都采用bgsave的方式，s<strong>ave命令可以放弃使用</strong>。</p>
+</li>
+</ul>
+<h3 id="4-1-3RDB启动方式——save配置"><a href="#4-1-3RDB启动方式——save配置" class="headerlink" title="4.1.3RDB启动方式——save配置"></a>4.1.3RDB启动方式——save配置</h3><ul>
+<li><p>满足限定时间范围内key的变化数量达到指定数量即进行持久化</p>
+<p><img src="1588582081351.png" alt="1588582081351"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">save second changes</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>second：监控时间范围</p>
+<p>changes：监控key的变化量</p>
+</blockquote>
+</li>
+<li><p>位置：在conf文件中进行配置</p>
+</li>
+<li><p>注意：</p>
+<ul>
+<li>save配置要根据实际业务情况进行设置，频度过高或过低都会出现性能问题，结果可能是灾难性的 </li>
+<li>save配置中对于second与changes设置通常具有互补对应关系，尽量不要设置成包含性关系</li>
+<li>save配置启动后执行的是bgsave操作</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-1-4对比"><a href="#4-1-4对比" class="headerlink" title="4.1.4对比"></a>4.1.4对比</h3><table>
+<thead>
+<tr>
+<th align="center">方式</th>
+<th align="center">save指令</th>
+<th align="center">bgsave指令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">读写</td>
+<td align="center">同步</td>
+<td align="center">异步</td>
+</tr>
+<tr>
+<td align="center">阻塞客户端指令</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">额外内存消耗</td>
+<td align="center">否</td>
+<td align="center">是</td>
+</tr>
+<tr>
+<td align="center">启动新进程</td>
+<td align="center">否</td>
+<td align="center">是</td>
+</tr>
+</tbody></table>
+<h3 id="4-1-5RDB特殊启动形式"><a href="#4-1-5RDB特殊启动形式" class="headerlink" title="4.1.5RDB特殊启动形式"></a>4.1.5RDB特殊启动形式</h3><ul>
+<li><p>全量复制</p>
+<ul>
+<li>在主从复制中详细讲解 </li>
+</ul>
+</li>
+<li><p>服务器运行过程中重启</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">debug reload</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>关闭服务器时指定保存数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shutdown save</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+<h3 id="4-1-6优点-amp-缺点"><a href="#4-1-6优点-amp-缺点" class="headerlink" title="4.1.6优点 &amp; 缺点"></a>4.1.6优点 &amp; 缺点</h3><ul>
+<li><p>RDB优点</p>
+<ul>
+<li>RDB是一个紧凑压缩的二进制文件，<strong>存储效率较高</strong></li>
+<li>RDB内部存储的是redis在某个时间点的数据快照，<strong>非常适合用于数据备份，全量复制等场景</strong> </li>
+<li>RDB<strong>恢复数据</strong>的<strong>速度要比AOF快很多</strong> </li>
+<li>应用：服务器中每X小时执行bgsave备份，并将RDB文件拷贝到远程机器中，用于灾难恢复。</li>
+</ul>
+</li>
+<li><p>Rdb缺点</p>
+<ul>
+<li>RDB方式无论是执行指令还是利用配置，无法做到实时持久化，<strong>具有较大的可能性丢失数据</strong> </li>
+<li>bgsave指令每次运行<strong>要执行fork操作创建子进程，要牺牲掉一些性能</strong></li>
+<li>Redis的<strong>众多版本中未进行RDB文件格式的版本统一</strong>，有可能出现各版本服务之间数据格式无法兼容现象</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-2AOF方案"><a href="#4-2AOF方案" class="headerlink" title="4.2AOF方案"></a>4.2AOF方案</h2><h3 id="4-2-1引入"><a href="#4-2-1引入" class="headerlink" title="4.2.1引入"></a>4.2.1引入</h3><ul>
+<li>RDB存储的弊端<ul>
+<li>存储数据量较大，效率较低【基于快照思想，每次读写都是全部数据，当数据量巨大时，效率非常低】</li>
+<li>大数据量下的IO性能较低</li>
+<li>基于fork创建子进程，内存产生额外消耗</li>
+<li>宕机带来的数据丢失风险</li>
+</ul>
+</li>
+<li>解决思路<ul>
+<li><strong>写全数据，仅记录部分数据</strong></li>
+<li><strong>改记录数据为记录操作过程</strong></li>
+<li><strong>对所有操作均进行记录，排除丢失数据的风险</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-2AOF概念"><a href="#4-2-2AOF概念" class="headerlink" title="4.2.2AOF概念"></a>4.2.2AOF概念</h3><ul>
+<li><p>以独立日志的方式记录每次写命令，<strong>重启时再重新执行AOF文件中命令达到恢复数据的目的</strong>。与RDB相比可以简单描述为改记录数据为记录数据产生的过程</p>
+</li>
+<li><p>作用：解决了数据持久化的实时性，<strong>目前已经是Redis持久化的主流方式</strong></p>
+<p><img src="1588584037410.png" alt="1588584037410"></p>
+</li>
+<li><p>AOF写数据三种策略(appendfsync)</p>
+<ul>
+<li><code>always(每次）</code>每次写入操作均同步到AOF文件中，<strong>数据零误差，性能较低</strong>，不建议使用。</li>
+<li><code>everysec（每秒）</code>每秒将缓冲区中的指令同步到AOF文件中，<strong>数据准确性较高，性能较高</strong>，建议使用，也是默认配置 在系统突然宕机的情况下丢失1秒内的数据</li>
+<li><code>no（系统控制）</code>由操作系统控制每次同步到AOF文件的周期，整体过程<strong>不可控</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-3AOF重写"><a href="#4-2-3AOF重写" class="headerlink" title="4.2.3AOF重写"></a>4.2.3AOF重写</h3><p><img src="1588584845063.png" alt="1588584845063"></p>
+<ul>
+<li>随着命令不断写入AOF，文件会越来越大，为了解决这个问题，Redis引入了<strong>AOF重写机制压缩文件体积</strong>。</li>
+<li>AOF文件重写：将<strong>Redis进程内的数据</strong>转化为<strong>写命令同步到新AOF文件的过程</strong>。【将对同一个数据的若干个条命令执行结果转化成最终结果数据对应的指令进行记录。】</li>
+<li>作用<ul>
+<li>降低磁盘占用量，提高磁盘利用率</li>
+<li>提高持久化效率，降低持久化写时间，提高IO性能</li>
+<li>降低数据恢复用时，提高数据恢复效率</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-4AOF重写规则"><a href="#4-2-4AOF重写规则" class="headerlink" title="4.2.4AOF重写规则"></a>4.2.4AOF重写规则</h3><ul>
+<li><strong>进程内已超时的数据不再写入文件</strong></li>
+<li><strong>忽略无效指令，重写时使用进程内数据直接生成</strong>，这样新的AOF文件只保留最终数据的写入命令 <ul>
+<li>如<code>del key1、 hdel key2、srem key3、set key4 111、set key4 222</code>等</li>
+</ul>
+</li>
+<li>对同一数据的多条写命令合并为一条命令<ul>
+<li>如<code>lpush list1 a、lpush list1 b、 lpush list1 c</code>可以转化为：<code>lpush list1 a b c</code>。</li>
+<li>为防止数据量过大造成客户端缓冲区溢出，对list、set、hash、zset等类型，每条指令最多写入64个元素</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-5AOF重写方式"><a href="#4-2-5AOF重写方式" class="headerlink" title="4.2.5AOF重写方式"></a>4.2.5AOF重写方式</h3><ul>
+<li><p>手动重写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bgrewriteaof</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>bgrewriteaof指令工作原理</p>
+<p><img src="1588584827646.png" alt="1588584827646"></p>
+</li>
+</ul>
+</li>
+<li><p>自动重写</p>
+<ul>
+<li><p>自动重写触发条件设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto-aof-rewrite-min-size [size] </span><br><span class="line">auto-aof-rewrite-percentage [percentage]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动重写触发比对参数（ 运行指令info Persistence获取具体信息 ）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aof_current_size</span><br><span class="line">aof_base_size</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动重写触发条件</p>
+<p><img src="1588585553364.png" alt="1588585553364"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-6AOF工作流程"><a href="#4-2-6AOF工作流程" class="headerlink" title="4.2.6AOF工作流程"></a>4.2.6AOF工作流程</h3><p><img src="1588586007153.png" alt="1588586007153"></p>
+<p><img src="1588586438267.png" alt="1588586438267"></p>
+<h2 id="4-3AOF-amp-RDB对比"><a href="#4-3AOF-amp-RDB对比" class="headerlink" title="4.3AOF &amp; RDB对比"></a>4.3AOF &amp; RDB对比</h2><p><img src="1588586605001.png" alt="1588586605001"></p>
+<ul>
+<li><strong>对数据非常敏感，建议使用默认的AOF持久化方案</strong><ul>
+<li>AOF持久化策略使用everysecond，每秒钟fsync一次。该策略redis仍可以保持很好的处理性能，当出现问题时，最多丢失0-1秒内的数据。</li>
+<li>注意：由于AOF文件存储体积较大，且恢复速度较慢</li>
+</ul>
+</li>
+<li><strong>数据呈现阶段有效性，建议使用RDB持久化方案</strong><ul>
+<li>数据可以良好的做到阶段内无丢失（该阶段是开发者或运维人员手工维护的），且恢复速度较快，阶段 点数据恢复通常采用RDB方案</li>
+<li>注意：利用RDB实现紧凑的数据持久化会使Redis降的很低，慎重总结：</li>
+</ul>
+</li>
+<li>综合比对<ul>
+<li>RDB与AOF的选择实际上是在做一种权衡，每种都有利有弊</li>
+<li>如不能承受数分钟以内的数据丢失，对业务数据非常敏感，选用AOF </li>
+<li>如能承受数分钟以内的数据丢失，且追求大数据集的恢复速度，选用RDB</li>
+<li>灾难恢复选用RDB</li>
+<li>双保险策略，同时开启 RDB 和 AOF，重启后，Redis优先使用 AOF 来恢复数据，降低丢失数据的量</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-4持久化应用场景"><a href="#4-4持久化应用场景" class="headerlink" title="4.4持久化应用场景"></a>4.4持久化应用场景</h2><ul>
+<li><del>Tips 1：redis用于控制数据库表主键id，为数据库表主键提供生成策略，保障数据库表的主键唯一性</del>【从DB读取最大】</li>
+<li><del>Tips 3：redis应用于各种结构型和非结构型高热度数据访问加速</del>【从DB读取】</li>
+<li><del>Tips 4：redis 应用于购物车数据存储设计</del>【从DB读取】</li>
+<li>Tips 5：redis 应用于抢购，限购类、限量发放优惠卷、激活码等业务的数据存储设计</li>
+<li><del>Tips 6：redis 应用于具有操作先后顺序的数据控制</del>【用MQ】</li>
+<li><del>Tips 7：redis 应用于最新消息展示</del>【用RQ】</li>
+<li><del>Tips 9：redis 应用于同类信息的关联搜索，二度关联搜索，深度关联搜索</del>【从DB读取】</li>
+<li><del>Tips 12：redis 应用于基于黑名单与白名单设定的服务控制【长期】</del>【从DB读取】</li>
+<li>Tips 12：redis 应用于基于黑名单设定的服务控制【短期】</li>
+<li>Tips 13：redis 应用于计数器组合排序功能对应的排名</li>
+<li><del>Tips 15：redis 应用于即时任务/消息队列执行管理</del>【用MQ】</li>
+<li>Tips 16：redis 应用于按次结算的服务控制</li>
+</ul>
+<h1 id="5-Redis事务"><a href="#5-Redis事务" class="headerlink" title="5.Redis事务"></a>5.Redis事务</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>redis事务就是一个命令执行的队列，将一系列预定义命令包装成一个整体（一个队列）。当执行时，一次性 按照添加顺序依次执行，中间不会被打断或者干扰。</li>
+<li>一个队列中，一次性、顺序性、排他性的执行一系列命令</li>
+</ul>
+<p><img src="1588599302710.png" alt="1588599302710"></p>
+<h2 id="事务的基本操作"><a href="#事务的基本操作" class="headerlink" title="事务的基本操作"></a>事务的基本操作</h2><ul>
+<li><p>开启事务</p>
+<ul>
+<li><p>设定事务的开启位置，此指令执行后，后续的所有指令均加入到事务中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multi</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>执行事务 </p>
+<ul>
+<li><p>设定事务的结束位置，同时执行事务。与multi成对出现，成对使用 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>取消事务</p>
+<ul>
+<li><p>终止当前事务的定义，发生在multi之后，exec之前</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discard</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>注意：加入事务的命令暂时进入到任务队列中，并没有立即执行，只有执行exec命令才开始执行</p>
+</li>
+</ul>
+<h2 id="事务的工作流程"><a href="#事务的工作流程" class="headerlink" title="事务的工作流程"></a>事务的工作流程</h2><p><img src="1588599890428.png" alt="1588599890428"></p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li><p>定义事务的过程中，<strong>命令格式输入错误</strong>怎么办？ </p>
+<ul>
+<li>语法错误：命令书写格式有误</li>
+<li>处理结果 如果定义的事务中所包含的命令存在语法错误，整体事务中所有命令均不会执行。包括那些语法正确的命令。</li>
+</ul>
+<p><img src="1588600366786.png" alt="1588600366786"></p>
+</li>
+<li><p>定义事务的过程中，<strong>命令执行出现错误</strong>怎么办？ </p>
+<ul>
+<li>运行错误：命令格式正确，但是无法正确的执行。例如对list进行incr操作 </li>
+<li>能够正确运行的命令会执行，运行错误的命令不会被执行 </li>
+</ul>
+<p><img src="1588600336265.png" alt="1588600336265"></p>
+</li>
+<li><p><strong>已经执行完毕的命令对应的数据不会自动回滚，需要程序员自己在代码中实现回滚。</strong></p>
+</li>
+</ul>
+<h2 id="基于特定条件的事务执行"><a href="#基于特定条件的事务执行" class="headerlink" title="基于特定条件的事务执行"></a>基于特定条件的事务执行</h2><ul>
+<li><p>多个客户端有可能同时操作同一组数据，并且该数据一旦被操作修改后，将不适用于继续操作</p>
+</li>
+<li><p>在操作之前锁定要操作的数据，一旦发生变化，终止当前操作</p>
+</li>
+<li><p>对 key 添加监视锁，在执行exec前如果key发生了变化，终止事务执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">watch key1 [key2……]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>watch 不能在multi命令之后</p>
+</blockquote>
+</li>
+<li><p>取消对所有 key 的监视 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unwatch</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h3 id="业务场景"><a href="#业务场景" class="headerlink" title="业务场景"></a>业务场景</h3><ul>
+<li>redis 应用基于状态控制的批量任务执行</li>
+</ul>
+<h1 id="6-Redis-删除策略"><a href="#6-Redis-删除策略" class="headerlink" title="6.Redis 删除策略"></a>6.Redis 删除策略</h1><h2 id="6-1过期数据"><a href="#6-1过期数据" class="headerlink" title="6.1过期数据"></a>6.1过期数据</h2><ul>
+<li>Redis是一种内存级数据库，所有数据均存放在内存中，内存中的数据可以通过TTL指令获取其状态<ul>
+<li>XX ：具有时效性的数据</li>
+<li>-1 ：永久有效的数据 ：已经过期的数</li>
+<li>-2 ：<strong>已经过期的数据</strong> 或 被删除的数据 或 未定义的数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-2数据删除策略"><a href="#6-2数据删除策略" class="headerlink" title="6.2数据删除策略"></a>6.2数据删除策略</h2><h3 id="6-2-1时效性数据的存储结构"><a href="#6-2-1时效性数据的存储结构" class="headerlink" title="6.2.1时效性数据的存储结构"></a>6.2.1时效性数据的存储结构</h3><p><img src="1588602997289.png" alt="1588602997289"></p>
+<h3 id="6-2-2数据删除策略的目标"><a href="#6-2-2数据删除策略的目标" class="headerlink" title="6.2.2数据删除策略的目标"></a>6.2.2数据删除策略的目标</h3><p>在内存占用与CPU占用之间寻找一种平衡，顾此失彼都会造成整体redis性能的下降，甚至引发服务器宕机或内存泄露</p>
+<h3 id="6-2-3定时删除"><a href="#6-2-3定时删除" class="headerlink" title="6.2.3定时删除"></a>6.2.3定时删除</h3><ul>
+<li>创建一个定时器，当key设置有过期时间，且过期时间到达时，由定时器任务立即执行对键的删除操作<ul>
+<li>优点：节约内存，到时就删除，快速释放掉不必要的内存占用 </li>
+<li>缺点：CPU压力很大，无论CPU此时负载量多高，均占用CPU，会影响redis服务器响应时间和指令吞吐量 </li>
+<li>总结：用处理器性能换取存储空间 （拿时间换空间）</li>
+</ul>
+</li>
+</ul>
+<p><img src="1588603340595.png" alt="1588603340595"></p>
+<p><img src="1588603390266.png" alt="1588603390266"></p>
+<h3 id="6-2-4惰性删除"><a href="#6-2-4惰性删除" class="headerlink" title="6.2.4惰性删除"></a>6.2.4惰性删除</h3><ul>
+<li><p>数据到达过期时间，不做处理。等下次访问该数据时</p>
+<ul>
+<li>如果未过期，返回数据</li>
+<li>发现已过期，删除，返回不存在</li>
+</ul>
+</li>
+<li><p>优点：节约CPU性能，发现必须删除的时候才删除</p>
+</li>
+<li><p>缺点：内存压力很大，出现长期占用内存的数据</p>
+</li>
+<li><p>总结：用存储空间换取处理器性能 （拿时间换空间）</p>
+<p><img src="1588603547170.png" alt="1588603547170"></p>
+<p><img src="1588603606205.png" alt="1588603606205"></p>
+</li>
+</ul>
+<h3 id="6-2-5定期删除"><a href="#6-2-5定期删除" class="headerlink" title="6.2.5定期删除"></a>6.2.5定期删除</h3><ul>
+<li><p>Redis启动服务器初始化时，读取配置server.hz的值，默认为10</p>
+</li>
+<li><p>每秒钟执行server.hz次<code>serverCron()</code></p>
+<p>​                                                —-&gt;<code>databasesCron()</code></p>
+<p>​                                                     —-&gt;<code>activeExpireCycle()</code></p>
+</li>
+<li><p><code>activeExpireCycle()</code>对每个<code>expires[*]</code>逐一进行检测，每次执行<code>250/server.hz</code>ms</p>
+</li>
+<li><p>对某个<code>expires[*]</code>检测时，随机挑选W个key检测 </p>
+<ul>
+<li>如果key超时，删除key </li>
+<li>如果一轮中<code>删除的key的数量&gt;W*25%</code>，循环该过程</li>
+<li>如果一轮中<code>删除的key的数量≤W*25%</code>，检查下一个<code>expires[\*]</code>，0-15循环</li>
+</ul>
+</li>
+<li><p><code>W=ACTIVE_EXPIRE_CYCLE_LOOKUPS_PER_LOOP</code>属性值</p>
+</li>
+<li><p>参数<code>current_db</code>用于记录<code>activeExpireCycle()</code>进入哪个<code>expires[*]</code>执行。如果activeExpireCycle()执行时间到期，下次从<code>current_db</code>继续向下执行</p>
+</li>
+<li><p>周期性轮询redis库中的时效性数据，采用随机抽取的策略，利用过期数据占比的方式控制删除频度</p>
+<ul>
+<li>特点1：CPU性能占用设置有峰值，检测频度可自定义设置</li>
+<li>特点2：内存压力不是很大，长期占用内存的冷数据会被持续清理 </li>
+</ul>
+</li>
+<li><p>总结：周期性抽查存储空间（随机抽查，重点抽查）</p>
+</li>
+</ul>
+<p><img src="1588603704644.png" alt="1588603704644"></p>
+<p><img src="1588604972997.png" alt="1588604972997"></p>
+<h2 id="6-3逐出算法"><a href="#6-3逐出算法" class="headerlink" title="6.3逐出算法"></a>6.3逐出算法</h2><ul>
+<li><p>Redis使用内存存储数据，在执行每一个命令前，会调用<code>freeMemoryIfNeeded()</code>检测内存是否充足。</p>
+</li>
+<li><p>逐出算法：<strong>如果内存不满足新加入数据的最低存储要求，redis要临时删除一些数据为当前指令清理存储空间。清理数据的策略即为逐出算法。</strong></p>
+</li>
+<li><p>注意：逐出数据的过程不是100%能够清理出足够的可使用的内存空间，如果不成功则反复执行。当对所有数据尝试完毕后，如果不能达到内存清理的要求，将出现错误信息。</p>
+<p><img src="1588606582199.png" alt="1588606582199"></p>
+</li>
+<li><p>最大可使用内存，占用物理内存的比例，默认值为0，表示不限制</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maxmemory []</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>生产环境中根据需求设定，通常设置在50%以上。</p>
+</blockquote>
+</li>
+<li><p>每次选取待删除数据的个数，选取数据时并不会全库扫描，导致严重的性能消耗，降低读写性能。因此采用随机获取数据的方式作为待检测删除数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maxmemory-samples []</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除策略，达到最大内存后的，对被挑选出来的数据进行删除的策略</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maxmemory-policy []</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>检测易失数据（可能会过期的数据集server.db[i].expires ）<ul>
+<li>① volatile-lru：挑选最近最少使用的数据淘汰</li>
+<li>② volatile-lfu：挑选最近使用次数最少的数据淘汰 </li>
+<li>③ volatile-ttl：挑选将要过期的数据淘汰 </li>
+<li>④ volatile-random：任意选择数据淘汰 </li>
+</ul>
+</li>
+<li>检测全库数据（所有数据集server.db[i].dict ）<ul>
+<li>⑤ allkeys-lru：挑选最近最少使用的数据淘汰 </li>
+<li>⑥ allkeys-lfu：挑选最近使用次数最少的数据淘汰 </li>
+<li>⑦ allkeys-random：任意选择数据淘汰 </li>
+</ul>
+</li>
+<li>放弃数据驱逐 <ul>
+<li>⑧ no-enviction（驱逐）：禁止驱逐数据（redis4.0中默认策略），会引发错误OOM（Out Of Memory）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="post-copyright"><blockquote><p>原文作者: 掘金木匠</p><p>原文链接: <a href="http://goldcarpenter.github.io/2020/04/04/Redis_Part2/">http://goldcarpenter.github.io/2020/04/04/Redis_Part2/</a></p><p>版权声明: 转载请注明出处(必须保留作者署名及链接)</p></blockquote></div><div class="tags"><a href="/tags/Redis/">Redis</a></div><div class="post-share"><div class="social-share"><span>分享到:</span></div></div><div class="post-nav"><a href="/2020/04/17/Redis_Part3/" class="pre">Redis</a><a href="/2020/03/29/Nginx%E5%9F%BA%E7%A1%80/" class="next">Nginx</a></div><div id="comments"><div id="SOHUCS" sid="2020/04/04/Redis_Part2/"></div></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Jedis"><span class="toc-text">2.Jedis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1Jedis入门程序"><span class="toc-text">2.1Jedis入门程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2Jedis读写redis数据"><span class="toc-text">2.2Jedis读写redis数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3Jedis连接池"><span class="toc-text">2.3Jedis连接池</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-基于Linux的Redis"><span class="toc-text">3.基于Linux的Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1Redis启动"><span class="toc-text">3.1Redis启动</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Redis持久化"><span class="toc-text">4.Redis持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1RDB方案"><span class="toc-text">4.1RDB方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-1RDB启动方式——save指令"><span class="toc-text">4.1.1RDB启动方式——save指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-2RDB启动方式-——-bgsave指令命令"><span class="toc-text">4.1.2RDB启动方式 —— bgsave指令命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-3RDB启动方式——save配置"><span class="toc-text">4.1.3RDB启动方式——save配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-4对比"><span class="toc-text">4.1.4对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-5RDB特殊启动形式"><span class="toc-text">4.1.5RDB特殊启动形式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-6优点-amp-缺点"><span class="toc-text">4.1.6优点 &amp; 缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2AOF方案"><span class="toc-text">4.2AOF方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1引入"><span class="toc-text">4.2.1引入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-2AOF概念"><span class="toc-text">4.2.2AOF概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3AOF重写"><span class="toc-text">4.2.3AOF重写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-4AOF重写规则"><span class="toc-text">4.2.4AOF重写规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-5AOF重写方式"><span class="toc-text">4.2.5AOF重写方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-6AOF工作流程"><span class="toc-text">4.2.6AOF工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3AOF-amp-RDB对比"><span class="toc-text">4.3AOF &amp; RDB对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4持久化应用场景"><span class="toc-text">4.4持久化应用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-Redis事务"><span class="toc-text">5.Redis事务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事务的基本操作"><span class="toc-text">事务的基本操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#事务的工作流程"><span class="toc-text">事务的工作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意事项"><span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基于特定条件的事务执行"><span class="toc-text">基于特定条件的事务执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#业务场景"><span class="toc-text">业务场景</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-Redis-删除策略"><span class="toc-text">6.Redis 删除策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-1过期数据"><span class="toc-text">6.1过期数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-2数据删除策略"><span class="toc-text">6.2数据删除策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-1时效性数据的存储结构"><span class="toc-text">6.2.1时效性数据的存储结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-2数据删除策略的目标"><span class="toc-text">6.2.2数据删除策略的目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-3定时删除"><span class="toc-text">6.2.3定时删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-4惰性删除"><span class="toc-text">6.2.4惰性删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-5定期删除"><span class="toc-text">6.2.5定期删除</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-3逐出算法"><span class="toc-text">6.3逐出算法</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/17/Redis_Part3/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Redis_Part2/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/29/Nginx%E5%9F%BA%E7%A1%80/">Nginx</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/26/Redis_Part1/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part3/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part2/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/25/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part1/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/02/javaIO/">JavaIO</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/12/21/ThreadLocal/">ThreadLocal总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/11/19/SpringMVC_Part3/">SpringMVC</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Debug%E8%AE%B0%E5%BD%95/">Debug记录</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E9%AB%98%E7%BA%A7/">Java高级</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL%E5%9F%BA%E7%A1%80/">MySQL基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E5%BC%80%E5%8F%91/">Web开发</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 15px;">注解</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/%E5%86%85%E9%83%A8%E7%B1%BB/" style="font-size: 15px;">内部类</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/ThreadLocal/" style="font-size: 15px;">ThreadLocal</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 15px;">多线程</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/IEDA/" style="font-size: 15px;">IEDA</a> <a href="/tags/Redis/" style="font-size: 15px;">Redis</a> <a href="/tags/SpringMVC/" style="font-size: 15px;">SpringMVC</a> <a href="/tags/MyBatis/" style="font-size: 15px;">MyBatis</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">34</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> 友情链接</i></div><ul></ul><a href="http://www.scu.edu.cn/" title="四川大学首页" target="_blank">四川大学首页</a><ul></ul><a href="http://www.scu.edu.cn/" title="个人项目——待完善" target="_blank">个人项目——待完善</a><ul></ul><a href="http://www.scu.edu.cn/" title="个人项目——待完善" target="_blank">个人项目——待完善</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅本站</a> |  <a href="/about/">联系博主</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">掘金木匠.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.4"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.4" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script><script>window._config = { showScore: true };
+(function(){ 
+  var appid = 'cyuBR2wWE'; 
+  var conf = 'cbd82aee65d05c481319a299102b4811'; 
+  var width = window.innerWidth || document.documentElement.clientWidth; 
+  var nodes =document.getElementsByTagName("head")[0]||document.head||document.documentElement;
+  if (/(Android|iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) && width < 750) {  
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+  }
+  else { 
+    var loadJs=function(d,a){
+      var b=document.createElement("script");b.setAttribute("type","text/javascript");
+      b.setAttribute("charset","UTF-8");
+      b.setAttribute("src",d);
+      if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}
+      nodes.appendChild(b)
+    };
+    loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); 
+  } 
+  var loadCss = function(cssString){  
+    var style=document.createElement("style");  
+    style.setAttribute("type", "text/css");  
+    if(style.styleSheet){// IE  
+        style.styleSheet.cssText = cssString;  
+    } else {// w3c  
+        var cssText = document.createTextNode(cssString);  
+        style.appendChild(cssText);  
+    }
+    nodes.appendChild(style);
+  }
+  //- window.onload=function(){
+  //-   if(window.outerWidth<=775){
+  //-     loadCss('.module-hot-topic,.module-cmt-float-bar{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .cbox-prompt-w span.prompt-empty-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w .form-text-w span.text-null,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w a.comment-link-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w span.comment-text-w,#SOHUCS #SOHU_MAIN .module-cmt-footer .section-service-w div.service-wrap-w a:hover,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w span.wrap-name-w,#SOHUCS #SOHU_MAIN .module-cmt-list .action-click-gw span.click-disable-eg a em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li div.title-name-gw,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number .comment-number span.cy-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number span.comment-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active,#SOHUCS #SOHU_MAIN .module-cmt-list .msg-wrap-gw .wrap-action-gw .action-click-gw span a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .picture-box-gw div.box-action-gw a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-action-gw .action-click-gw span a:hover em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-user-gw span.user-name-gw a{color:#40759b!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-r,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-l,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-r{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-l{background:#FFF!important;top:-2px!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-function-w .uploading-wrapper-dw div.wrapper-image-dw,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-main,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w div.form-text-w,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-list .module-cmt-box .post-wrap-w div.post-wrap-main{border:1px solid #e6e6e6!important;border-radius:20px 20px 20px 20px;margin:0!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw{width:130px!important;height:34px!important;line-height:33px!important;font-size:17px!important;background:#5483b1!important;border-radius:20px!important;color:#FFF!important;-webkit-box-shadow:0 -1px 4px #5483b1 inset;box-shadow:0 -1px 10px #5483b1 inset}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw:before{content:"发表评论"}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a:hover .btn-fw{color:#40759b!important;background:#FFF!important}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li{background:none!important;border-bottom:1px solid #e6e6e6}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active{border:1px solid #e6e6e6;border-radius:10px 10px 0 0;border-bottom:none}#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li .title-name-gw div.title-name-gw-tag{background:#5483b1!important;border-radius:3px}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type div.cmt-list-border{background-color:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item{border:1px solid #e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo{text-align:center;line-height:40px;border-radius:50%!important;background:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo:before{content:"畅";font-size:22px;color:#FFF}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text,#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text i{color:#5483b1!important}#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w{background:#FFF!important}@media screen and (min-width:900px){#SOHUCS #SOHU_MAIN .module-mobile-cmt-list .list-wrapper-wap .list-container-wap .list-item-wap .list-content-wrapper-wap .cmt-list-image-container .cmt-list-image{max-width: 100%;}}');
+  //-   }
+  //- };
+})();
+function removeElement(_element){
+     var _parentElement = _element.parentNode;
+     if(_parentElement){
+            _parentElement.removeChild(_element);
+     }
+}
+var removeAD = document.createElement("div");
+removeAD.id = 'removeAD';
+var adInterval1 = setInterval(function() {
+  if(document.querySelector("#feedAv")){
+    document.querySelector("[node-type=cmt-list]").appendChild(removeAD);
+    document.querySelector("#removeAD").appendChild(document.querySelector("#feedAv"));
+    //- removeElement(document.querySelectorAll("#feedAv")[0]);
+    var feedAv = document.querySelector("#feedAv").children;
+    for( item of feedAv){
+      item.style.display = 'none'
+    }
+    document.querySelector("#removeAD").style.display="none"
+    clearInterval(adInterval1);
+  }
+},1000);
+var adInterval2 = setInterval(function() {
+  if(document.querySelector("#pop_ad")){
+    removeElement(document.querySelector("#pop_ad"));
+    clearInterval(adInterval2);
+  }
+}, 1000);</script><script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script></body></html>
