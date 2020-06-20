@@ -1,0 +1,742 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JJMJ's blog."><meta name="keywords" content="Java, Spring, MyBatis, 后端"><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.4"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.4"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><title>Tomcat | 掘金木匠</title><meta name="generator" content="Hexo 4.2.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Tomcat</h1><a id="logo" href="/.">掘金木匠</a><p class="description">懂金融的软件工程师一定是一个合格的吃货</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">Tomcat</h1><div class="post-meta"><a href="/2020/01/11/Tomcat_Part1/#comments" class="comment-count"><i id="changyan_count_unit" data-xid="2020/01/11/Tomcat_Part1/"></i>留言,<i id="changyan_parti_unit" data-xid="2020/01/11/Tomcat_Part1/"></i>参与</a><p><span class="date">Jan 11, 2020</span><span><a href="/categories/Web%E5%BC%80%E5%8F%91/" class="category">Web开发</a></span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>点击</i></i></span></p></div><div class="post-content"><h1 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a>Tomcat</h1><h2 id="1-Tomcat目录结构"><a href="#1-Tomcat目录结构" class="headerlink" title="1.Tomcat目录结构"></a>1.Tomcat目录结构</h2><table>
+<thead>
+<tr>
+<th>目录</th>
+<th>目录下文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bin</td>
+<td>/</td>
+<td>存放Tomcat的启动、停止等批处理脚本文件</td>
+</tr>
+<tr>
+<td></td>
+<td>startup.bat/startup.sh</td>
+<td>用于在windows和Iinux下的启动脚本</td>
+</tr>
+<tr>
+<td></td>
+<td>shutdown.bat/shutdown. sh</td>
+<td>用于在windows和linus下的停止脚本</td>
+</tr>
+<tr>
+<td>conf</td>
+<td>/</td>
+<td>用于存放Tomcat的相关配置文件</td>
+</tr>
+<tr>
+<td></td>
+<td>Catalina</td>
+<td>用于存储针对每个虚拟机的context配置</td>
+</tr>
+<tr>
+<td></td>
+<td>logging.properties</td>
+<td>Tomcat的日志配置文件，可以通过该文件修改tomcat的日志级别及日志路径等</td>
+</tr>
+<tr>
+<td></td>
+<td>server.xml</td>
+<td>Tomcat服务器的核心配置文件</td>
+</tr>
+<tr>
+<td></td>
+<td>tomcat-users.xml</td>
+<td>定义Tomcat默认的用户及角色映射信息配置</td>
+</tr>
+<tr>
+<td></td>
+<td>web.xml</td>
+<td>Tomcat中所有应用默认的部署描述文件，主要定义了基础servlet和时</td>
+</tr>
+<tr>
+<td></td>
+<td>context.xml</td>
+<td>用于定义所有web应用均需加载的context配置，如果web应用指定了自己的context. xml该文件将被覆盖</td>
+</tr>
+<tr>
+<td></td>
+<td>catalina.policy</td>
+<td>Tomcat运行的安全策略配置</td>
+</tr>
+<tr>
+<td></td>
+<td>catalina.properties</td>
+<td>Tomcat的环境变量配置l</td>
+</tr>
+<tr>
+<td>lib</td>
+<td>/</td>
+<td>Tomcat服务器的依赖包</td>
+</tr>
+<tr>
+<td>logs</td>
+<td>/</td>
+<td>Tomcat默认的日志存放目录</td>
+</tr>
+<tr>
+<td>webapps</td>
+<td>/</td>
+<td>Tomcat默认的web应用部署目录</td>
+</tr>
+<tr>
+<td>work</td>
+<td>/</td>
+<td>Web应用JSP代码生成和编译的临时目录</td>
+</tr>
+</tbody></table>
+<h2 id="2-Tomcat整体架构"><a href="#2-Tomcat整体架构" class="headerlink" title="2.Tomcat整体架构"></a>2.Tomcat整体架构</h2><h3 id="2-1-Http服务器处理请求"><a href="#2-1-Http服务器处理请求" class="headerlink" title="2.1.Http服务器处理请求"></a>2.1.Http服务器处理请求</h3><ul>
+<li><p>浏览器发给服务端的是一个Http格式的请求，Http服务器收到这个请求后，需要调用服务端程序来处理</p>
+</li>
+<li><p>所谓的服务端程序就是程序员写的Java类，一般来说不同的请求需要由不同的Java类来处理</p>
+</li>
+<li><p>如何确定所需要调用的业务Java代码？</p>
+<p><img src="1575856821617.png" alt="1575856821617"></p>
+<ul>
+<li><p>左图方案✖</p>
+<ul>
+<li>Http服务器<strong>直接调用</strong>具体业务类，存在过多的if…else…判断，<strong>紧耦合</strong></li>
+</ul>
+</li>
+<li><p>右图方案✔</p>
+<ul>
+<li>Http服务器不直接调用业务类，而把请求交给Servlet容器处理，Servlet容器通过Servlet接口调用业务类</li>
+<li>因此Servlet接口和servlet容器的出现，达到了Http服务器与业务类解耦的目的</li>
+<li>Servlet接口和Servlet容器这一整套规范叫作Servlet规范</li>
+<li>Tomcat按照Servlet规范的要求实现了Servlet容器，同时它们也具有HTTP服务器的功能</li>
+<li><strong>作为Java程序员</strong>。如果要实现新的业务功能，只需要<strong>实现一个Servlet</strong> ,并将Servlet<strong>注册到Tomcat (Servlet容器)</strong>中，剩下的事情就由Tomcat帮我们处理了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-Servlet容器工作流程"><a href="#2-2-Servlet容器工作流程" class="headerlink" title="2.2.Servlet容器工作流程"></a>2.2.Servlet容器工作流程</h3><ul>
+<li>为了解耦，Http服务器不直接调用Servlet，而是把请求交给servlet容器来处理，那<strong>Servlet容器又是怎么工作</strong>的呢?<ul>
+<li>当客户请求某个资源时 HTTP服务器会用一个ServletRequest对象把客户的<strong>请求信息封装</strong>起来,然后<strong>调用Servlet容器的service方法</strong></li>
+<li><strong>【定位Servlet】</strong>Servlet容器拿到请求后,根据<strong>请求的URL和Servlet的映射关系</strong>,找到相应的Servlet </li>
+<li><strong>【加载Servlet】</strong>如果servlet还没有被加载,就用反射机制<strong>创建这个Servlet</strong>，并调用Servlet的init方法来完成<strong>初始化</strong></li>
+<li><strong>【调用Servlet】</strong>接着<strong>调用Servlet的service方法来处理请求</strong>，把servletResponse对象返回给HTTP服务器, HTTP服务器会把响应发送给客户端。</li>
+</ul>
+</li>
+</ul>
+<p><img src="1575857441906.png" alt="1575857441906"></p>
+<h3 id="2-3-Tomcat整体架构"><a href="#2-3-Tomcat整体架构" class="headerlink" title="2.3.Tomcat整体架构"></a>2.3.Tomcat整体架构</h3><ul>
+<li><p>我们知道如果要设计一个系统，首先是要了解需求，我们已经了解了Tomcat要实现两个核心功能:</p>
+<ul>
+<li>处理socket连接 ,负责网络字节流与Request和Response对象的转化</li>
+<li>加载和管理Servlet ,以及具体处理Request请求</li>
+</ul>
+</li>
+<li><p>因此Tomcat设计了两个核心组件连接器( Connector )和容器( Container )来分别做这两件事情。</p>
+<ul>
+<li>连接器负责对外交流</li>
+<li>容器负责内部处理</li>
+</ul>
+<p><img src="1575857998509.png" alt="1575857998509"></p>
+</li>
+</ul>
+<h3 id="2-4-连接器–Coyote"><a href="#2-4-连接器–Coyote" class="headerlink" title="2.4.连接器–Coyote"></a>2.4.连接器–Coyote</h3><h4 id="2-4-1-架构介绍"><a href="#2-4-1-架构介绍" class="headerlink" title="2.4.1.架构介绍"></a>2.4.1.架构介绍</h4><ul>
+<li>Coyote是Tomcat的连接器框架的名称，是Tomcat服务器提供的供客户端访问的外部按口。客户端通过coyote与服务器建立连接、发送请求并接受响应</li>
+<li>Coyote封装了底层的网络通信(Socket请求及响应处理) , 为Catalina容器提供了统一的接口，使Catalina容器与<strong>具体的请求协议</strong>及<strong>IO操作方式完全解耦</strong></li>
+<li>Coyote将Socket输入转换封装为Request对象，交由Catalina容号进行处理，处理请求完成后，Catalina通过Coyote提供的Response对象将结果写入输出流</li>
+<li><strong>Coyote</strong>作为独立的模块，只负责具体协议和IO的相关操作，<strong>与Servlet规范实现没有直接关系</strong>，因此即便是<strong>Request和Response对象也并未实现servlet规范对应的接口</strong>，而是在<strong>Catalina中将他们进一步封装为ServletRequest 和ServletResponse</strong>。</li>
+</ul>
+<p><img src="1575858473531.png" alt="1575858473531"></p>
+<h4 id="2-4-2-IO模型与协议"><a href="#2-4-2-IO模型与协议" class="headerlink" title="2.4.2.IO模型与协议"></a>2.4.2.IO模型与协议</h4><ul>
+<li><p>在Coyote中，Tomcat支持的多种I/O模型和应用层协议</p>
+<ul>
+<li>在8.0之前，Tomcat默认采用的I/O方式为BIO</li>
+</ul>
+<p><img src="1575859048452.png" alt="1575859048452"></p>
+</li>
+<li><p>Tomcat支持的I/O模型（自8.5/9.0版本起，Tomcat移除了对BIO的支持）</p>
+<table>
+<thead>
+<tr>
+<th align="center">IO模型</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">NIO</td>
+<td align="center">非阻塞I/O，采用Java NIO类库实现【8.5默认】</td>
+</tr>
+<tr>
+<td align="center">NIO2</td>
+<td align="center">异步I/O，采用JDK 7最新的NIO2类实现</td>
+</tr>
+<tr>
+<td align="center">APR</td>
+<td align="center">采用Apache可移植运行库实现，是C/C++编写的本地库。如果选择该方案，需要单独安装</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Tomcat支持的应用层协议:</p>
+<table>
+<thead>
+<tr>
+<th align="center">应用层协议</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">HTTP/1.1</td>
+<td align="center">这是大部分Web应用采用的访问协议</td>
+</tr>
+<tr>
+<td align="center">AJP</td>
+<td align="center">用于和Web服务器集成(如Apache )。以实现对静态资源的优化以及集群部著，当前支持AJP/1.3</td>
+</tr>
+<tr>
+<td align="center">HTTP/2</td>
+<td align="center">HTTP 2. 0大幅度的提升了Web性能。下一代HTTP协议 ，自8 .5以及9.0版本之后支持</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>Tomcat为了实现支持多种I/O模型和应用层协议，一个容器可能对接多个连接器</strong>, 类比一个房间有多个门</p>
+</li>
+<li><p>单独的连接器或者容器都不能对外提供服务,需要把它们组装起来才能工作，<strong>组装后这个整体叫作Service组件</strong>。这里请你注意, Service本身没有做什么重要的事情，只是在连接器和容器外面多包了一层,把它们组装在一起</p>
+</li>
+<li><p>Tomcat内可能有多个Service ,这样的设计也是出于灵活性的考虑。通过在Tomcat中配置多个Service，可以实现通过不同的端口号来访问同一台机器上部署的不同应用</p>
+</li>
+</ul>
+<h4 id="2-4-3-连接器组件"><a href="#2-4-3-连接器组件" class="headerlink" title="2.4.3.连接器组件"></a>2.4.3.连接器组件</h4><p><img src="1575860153258.png" alt="1575860153258"></p>
+<ul>
+<li><p>连接器中的各个组件的作用如下</p>
+<ul>
+<li><p>Endpoint </p>
+<ul>
+<li>Coyote 通信端点，即<strong>通信监听的接口</strong>，是<strong>具体socket接收和发送处理器</strong>，是对<strong>传输层的抽象</strong>，因此Endpoint用来实现<strong>TCP/IP协议</strong>的</li>
+<li>Tomcat并没有EndPoint接口，而是提供了一个抽象类AbstractEndpoint，里面定义了两个内部类: Acceptor和SocketProcessor。<ul>
+<li>Acceptor用于监听Socket连接请求。</li>
+<li>SocketProcessor用于<strong>处理接收到的Socket请求,它实现Runnable接口</strong>。在Run方法里调用协议处理组件Processor进行处理。为了提高处理能力, <strong>Socketprocessor被提交到线程池来执行</strong>，而这个线程池叫作执行器(Executor) </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Processor</p>
+<ul>
+<li>Coyote<strong>协议处理接口</strong>，如果说EndPoint是用来实现Tcp/Ip协议的，那么Processor用来<strong>实现Http/AJP协议</strong></li>
+<li><strong>Processor接收来自EndPoint的Socket ,读取字节流解析成Tomcat Request和Response对象 ，并通过Adapter将其提交到容器处理</strong>，Processor是对<strong>应用层协议的抽象</strong>。</li>
+</ul>
+</li>
+<li><p>ProtocolHandler</p>
+<ul>
+<li>Coyote协议接口，通过Endpoint和Processor，实现针对具体协议的处理能力。 </li>
+<li>Tomcat<strong>按照协议和I/O提供了6个实现类</strong>: AjpNioProtocol，AjpAprprotocol，AjpNio2Protocol ，Http11Nioprotocol ，Http11Nio2Protocol , Http11AprProtocol</li>
+<li>我们在配置<code>tomcat/conf/server.xml</code>时，至少要指定具体的<code>ProtocolHandler</code>，当然也可以指定协议名称，如: <code>HTTP/1.1</code>, 如果安装了APR，那么将使用<code>Http11AprProtocol</code>，否则<br>使用<code>Http11NioProtocol</code>。</li>
+</ul>
+</li>
+<li><p>Adapter</p>
+<ul>
+<li>由于协议不同，客户端发过来的请求信息也不尽相同，Tomcat定义了自己的Request类来”存放”这些请求信息。</li>
+<li><strong>ProtocolHandler接口负责解析请求并生成Tomcat Request类</strong>。但是这个Request对象不是标准的ServletRequest，也就意味着不能用Tomcat Request作为参数来调用容器。</li>
+<li>Tomcat设计者的解决方案是引入CoyoteAdapter，这是<strong>适配器模式</strong>的经典运用，连接器调用CoyoteAdapter的Sevice方法，传入的是Tomcat Request对象，CoyoteAdapter负责将Tomcat Request转成ServletRequest，再调用容器的Service方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-5容器–Catalina"><a href="#2-5容器–Catalina" class="headerlink" title="2.5容器–Catalina"></a>2.5容器–Catalina</h3><ul>
+<li>Tomcat是由一系列可配置的组件构成的Web容器，而catalina是Tomcat的Servlet容器。</li>
+<li>Catalina是Servlet容器实现，包含了之前讲到的所有的容器组件。以及后续章节涉及到的安全、会话、集群、管理等servlet容器架构的各个方面。</li>
+<li>它通过松耦合的方式<strong>集成Coyote</strong>。以完成按照请求协议进行数据读写。同时,它还包括我们的启动入口、shell程序等。</li>
+</ul>
+<h4 id="2-5-1Catalina地位"><a href="#2-5-1Catalina地位" class="headerlink" title="2.5.1Catalina地位"></a>2.5.1Catalina地位</h4><ul>
+<li><p>Tomcat本质上就是一款Servlet容器，因此catalina才是Tomcat的核心，其他模块都是为Catalina提供支撑的。比如：通过Coyote模块提供链接通信，Jasper模块提供Jsp引擎，Naming提供JNDI服务，Juli提供日志服务。</p>
+<p><img src="1575862360805.png" alt="1575862360805"></p>
+</li>
+</ul>
+<h4 id="2-5-2Catalina结构"><a href="#2-5-2Catalina结构" class="headerlink" title="2.5.2Catalina结构"></a>2.5.2Catalina结构</h4><ul>
+<li>Catalina负责管理Server ,而Server表示着整个服务器。</li>
+<li>Server下面有多个服务Service。每个服务都包含着多个连接器组件Connector (coyote实现)和一个容器组件Container</li>
+<li>在Tomcat启动的时候，会初始化一个Catalina的实例</li>
+</ul>
+<p><img src="1575862500322.png" alt="1575862500322"></p>
+<ul>
+<li><p>Catalina各个组件的职责</p>
+<table>
+<thead>
+<tr>
+<th align="center">组件</th>
+<th align="center">职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Catalina</td>
+<td align="center">负责解析Tomcat的配置文件，以此来创建服务器Server组件,并根据命令来对其进行管理</td>
+</tr>
+<tr>
+<td align="center">Server</td>
+<td align="center"><strong>表示整个Catalina Servlet容器以及其它组件</strong>，负责组装并启动servlet引擎，Tomcat连接器。Server通过实现Lifecycle接口，提供了一种优雅的启动和关闭整个系统的方式</td>
+</tr>
+<tr>
+<td align="center">Service</td>
+<td align="center">是Server内部的组件，一个Server包含多个Service。它<strong>将若干个Connector组件绑定到一个Container (Engine)上</strong></td>
+</tr>
+<tr>
+<td align="center">Connector</td>
+<td align="center">处理与客户端的通信，它负责接收客户请求，然后转给相关的容器处理，最后向客户返回响应结果</td>
+</tr>
+<tr>
+<td align="center">Container</td>
+<td align="center">负责处理用户的servlet请求,并返回对象给Web用户的模块</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h4 id="2-5-3-Container结构"><a href="#2-5-3-Container结构" class="headerlink" title="2.5.3.Container结构"></a>2.5.3.Container结构</h4><ul>
+<li>Tomcat设计了4种容器，分别是Engine，Host，Context和Wrapper</li>
+<li>这4种容器不是平行关系，而是父子关系</li>
+<li>Tomcat通过一种分层的架构，使得servlet容器具有很好的灵活性</li>
+</ul>
+<p><img src="1575863290356.png" alt="1575863290356"></p>
+<ul>
+<li><p>各个组件含义</p>
+<table>
+<thead>
+<tr>
+<th align="center">容器</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Engine</td>
+<td align="center">表示整个Catalina的servlet引擎，用来管理多个虚拟站点，一个<strong>Service最多只能有一个Engine</strong>，但是<strong>一个引擎可包含多个Host</strong></td>
+</tr>
+<tr>
+<td align="center">Host</td>
+<td align="center">代表一个虚拟主机/站点。可以给Tomcat配置多个虚拟主机地址，而一个<strong>虚拟主机下可包含多个Context</strong></td>
+</tr>
+<tr>
+<td align="center">Context</td>
+<td align="center">表示个Web应用程序，<strong>一个Web应用可包含多个wrapper</strong></td>
+</tr>
+<tr>
+<td align="center">Wrapper</td>
+<td align="center">表示一个Servlet，Wrapper作为容眼中的最底层，不能包含子容器</td>
+</tr>
+</tbody></table>
+<ul>
+<li>可以通过Tomcat的Server.xml配置文件来加深对Tomcat容器的理解</li>
+<li>Tomcat采用了组件化的设计,它的构成组件都是可配置的，其中最外层的是Server ,其他组件按照一定的格式要求配置在这个顶层容器中</li>
+</ul>
+</li>
+<li><p>Tomcat是怎么管理这些容器?</p>
+<p><img src="1575864506324.png" alt="1575864506324"></p>
+<p>Container接口部分方</p>
+<p><img src="1575864576618.png" alt="1575864576618"></p>
+<ul>
+<li>这些容器具有父子关系，形成一个树形结构，Tomcat就是用<strong>组合模式</strong>来管理这些容器的</li>
+<li>具体实现方法是,所有容器组件都实现了Container接口,因此组合模式可以使得用户对单容器对象和组合容器对象的使用具有一致性。</li>
+<li>这里单容器对象指的是最底层的wrapper ,组合容器对象指的是上面的Context、Host或者Engine</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-6-Tomcat启动流程"><a href="#2-6-Tomcat启动流程" class="headerlink" title="2.6.Tomcat启动流程"></a>2.6.Tomcat启动流程</h3><h4 id="2-6-1流程"><a href="#2-6-1流程" class="headerlink" title="2.6.1流程"></a>2.6.1流程</h4><ul>
+<li>加载Tomcat的配置文件，初始化容器组件，监听对应的端口号，准备接受客户端请求</li>
+</ul>
+<p><img src="1575864794356.png" alt="1575864794356"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- 启动tomcat，需要调用bin&#x2F;startup.bat (在linux目录下，需要调用bin&#x2F;startup.sh)，在startup.bat 脚本中，调用了catalina.bat</span><br><span class="line">- 在catalina.bat脚本文件中,调用了org.apache.catalina.startup.Bootstrap中的main方法</span><br><span class="line">- 在Bootstrap的main方法中调用了init方法，来创建catalina及初始化类加载器</span><br><span class="line">- 在Bootstrap的main方法中调用了load方法，在其中又调用了catalina的load方法</span><br><span class="line">- 在catalina的load方法中，需要进行一些初始化的工作，并需要构造Digester对象，用于解析XMI</span><br><span class="line">- 然后在调用后续组件的初始化操作</span><br><span class="line">Server----------------------------&gt;</span><br><span class="line">Service---------------------------&gt;</span><br><span class="line">    Engine------------------------&gt;</span><br><span class="line">    Host--------------------------&gt;</span><br><span class="line">    Context-----------------------&gt;</span><br><span class="line">Executor--------------------------&gt;</span><br><span class="line">Connector-------------------------&gt;</span><br><span class="line">ProtocolHandler-------------------&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-6-2-源码解析"><a href="#2-6-2-源码解析" class="headerlink" title="2.6.2.源码解析"></a>2.6.2.源码解析</h4><h5 id="2-6-2-1-Lifecycle"><a href="#2-6-2-1-Lifecycle" class="headerlink" title="2.6.2.1.Lifecycle"></a>2.6.2.1.Lifecycle</h5><ul>
+<li><p>由于所有的组件均存在初始化、启动、停止等生命周期方法，拥有生命周期管理的特性</p>
+</li>
+<li><p>所以Tomcat在设计的时候，基于生命周期管理抽象成了一个接口Lifecycle , 而组件Server、Service, Container，Executor，Connector组件，都实现了一个生命周期的按口</p>
+</li>
+<li><p>从而具有了以下生命周期中的核心方法:</p>
+<ul>
+<li>init( ) :初始化组件</li>
+<li>start( ) :启动组件</li>
+<li>stop( ) :停止组件</li>
+<li>destroy( ) :销毁组件</li>
+</ul>
+<p><img src="1575876412558.png" alt="1575876412558"></p>
+</li>
+<li><p>各个组件的默认实现</p>
+<ul>
+<li><p>上面我们提到的server，service，Engine，Host，Context都是接口，下图中罗列了这些接口的默认实现类</p>
+<p><img src="1575876680679.png" alt="1575876680679"></p>
+</li>
+<li><p>当前对于Endpoint组件来说，在Tomcat中没有对应的Endpoint接口，但是有一个抽象类AbstractEndpoint , 其下有三个实现类：NioEndpoint，Nio2Endpoint，AprEndpoint，这三个实现类分别对应于前面讲解链接器Coyote时，提到的链接器支持的三种IO模型 : NIO，NIO2 , APR，Tomcat8 .5版本中,默认采用的是NioEndpoint</p>
+</li>
+<li><p>ProtocolHandler : Coyote协议接口通过封装Endpoint和Processor，实现针对具体协议的处理功能。 Tomcat按照协议和IO提供 了6个实现类</p>
+<p><img src="1575877029611.png" alt="1575877029611"></p>
+<ul>
+<li>AjpNioProtocol————Ajp协议 采用NIO的IO模型</li>
+<li>AjpNio2Protocol————Ajp协议 采用NIO2的IO模型</li>
+<li>AjpAprprotocol————Ajp协议 采用APR的IO模型 依赖于APR库</li>
+<li>Http11Nioprotocol————Http协议 采用NIO的IO模型 默认使用的协议</li>
+<li>Http11Nio2Protocol————Http协议 采用NIO2的IO模型</li>
+<li>Http11AprProtocol————Http协议 采用APR的IO模型 依赖于APR库</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="2-6-2-2-码源跟踪"><a href="#2-6-2-2-码源跟踪" class="headerlink" title="2.6.2.2.码源跟踪"></a>2.6.2.2.码源跟踪</h5><ul>
+<li>初试化过程</li>
+</ul>
+<p><img src="1575882726340.png" alt="1575882726340"></p>
+<p>进入bootstrap.init()–发现其创建Catalina对象</p>
+<p><img src="1575882406344.png" alt="1575882406344"></p>
+<p>返回main()继续</p>
+<p><img src="1575882756992.png" alt="1575882756992"></p>
+<p>进入BootStrap的load()—–其调用了catalina对象load方法</p>
+<p><img src="1575883061824.png" alt="1575883061824"></p>
+<p>打开catalina类</p>
+<p><img src="1575883116511.png" alt="1575883116511"></p>
+<p><img src="1575883199087.png" alt="1575883199087"></p>
+<p>在load()重载方法中</p>
+<p><img src="1575883484958.png" alt="1575883484958"></p>
+<p>catalina的load方法中初始化了Server</p>
+<p><img src="1575883581006.png" alt="1575883581006"></p>
+<p>进入init()方法—发现是个接口</p>
+<p><img src="1575885115518.png" alt="1575885115518"></p>
+<p>进入</p>
+<p><img src="1575885142269.png" alt="1575885142269"></p>
+<p>发现使用模板方法——将共有的逻辑抽象到父类中 在子类中实现自身逻辑</p>
+<p><img src="1575885165831.png" alt="1575885165831"></p>
+<p>进入initInternal()——寻找StandardServer实现类中的initInternal()</p>
+<p><img src="1575885323999.png" alt="1575885323999"></p>
+<p>在Server的init()中初始化services</p>
+<p><img src="1575885761324.png" alt="1575885761324"></p>
+<p>进入init()方法—发现又一次进入到顶级接口</p>
+<p><img src="1575885850910.png" alt="1575885850910"></p>
+<p>进入实现LifecycleBase</p>
+<p><img src="1575885886103.png" alt="1575885886103"></p>
+<p>再次进入initInternal</p>
+<p><img src="1575885959480.png" alt="1575885959480"></p>
+<p><img src="1575885991376.png" alt="1575885991376"></p>
+<p>查找Service的标准实现StandarService</p>
+<p><img src="1575886056384.png" alt="1575886056384"></p>
+<p>Service中执行内容很多了</p>
+<p><img src="1575886227664.png" alt="1575886227664"></p>
+<p>进入engine.init() executor.init()同理，此处跟踪connector.init()</p>
+<p><img src="1575886351176.png" alt="1575886351176"></p>
+<p><img src="1575886358791.png" alt="1575886358791"></p>
+<p><img src="1575886389139.png" alt="1575886389139"></p>
+<p><img src="1575886534305.png" alt="1575886534305"></p>
+<p>进入protocolHandler.init()</p>
+<p><img src="1575886609990.png" alt="1575886609990"></p>
+<p>进入实现类</p>
+<p><img src="1575886630318.png" alt="1575886630318"></p>
+<p><img src="1575886660319.png" alt="1575886660319"></p>
+<p>再进入super.init()—-发现初始化endpoint</p>
+<p><img src="1575886848776.png" alt="1575886848776"></p>
+<p>bind()方法又是一个模板方法</p>
+<p><img src="1575886977143.png" alt="1575886977143"></p>
+<p>选择默认IO模型</p>
+<p><img src="1575887040151.png" alt="1575887040151"></p>
+<p><img src="1575887148448.png" alt="1575887148448"></p>
+<p>至此所有初始化代码跟踪结束</p>
+<ul>
+<li>start过程</li>
+</ul>
+<p>返回main()方法 上一个部分是从daemon.load()开始的 此次进入start()方法</p>
+<p><img src="1575890204736.png" alt="1575890204736"></p>
+<p>通过反射调用了catalina.start()方法</p>
+<p><img src="1575890371487.png" alt="1575890371487"></p>
+<p>找到catalina.start()方法</p>
+<p><img src="1575890432430.png" alt="1575890432430"></p>
+<p><img src="1575890496608.png" alt="1575890496608"></p>
+<p>进入了Lifecycle接口</p>
+<p><img src="1575890527631.png" alt="1575890527631"></p>
+<p><img src="1575890578376.png" alt="1575890578376"></p>
+<p><img src="1575890667219.png" alt="1575890667219"></p>
+<p>进入startInternal()</p>
+<p><img src="1575890726199.png" alt="1575890726199"></p>
+<p>进入它的实现类</p>
+<p><img src="1575890757251.png" alt="1575890757251"></p>
+<p>调用了services.start()</p>
+<p><img src="1575890832824.png" alt="1575890832824"></p>
+<p>进入start()方法—-又回到了</p>
+<p><img src="1575890886680.png" alt="1575890886680"></p>
+<p>又回到了</p>
+<p><img src="1575890578376.png" alt="1575890578376"></p>
+<p>又回到了</p>
+<p><img src="1575890667219.png" alt="1575890667219"></p>
+<p>又回到了</p>
+<p><img src="1575890726199.png" alt="1575890726199"></p>
+<p>这次进入StanderService</p>
+<p><img src="1575891019790.png" alt="1575891019790"></p>
+<p><img src="1575891131058.png" alt="1575891131058"></p>
+<p>直接进入connector.start()</p>
+<p><img src="1575891203698.png" alt="1575891203698"></p>
+<p><img src="1575891218702.png" alt="1575891218702"></p>
+<p>进入Connector</p>
+<p><img src="1575891240984.png" alt="1575891240984"></p>
+<p><img src="1575891296313.png" alt="1575891296313"></p>
+<p>进入protocolHandler.start()</p>
+<p><img src="1575891354421.png" alt="1575891354421"></p>
+<p><img src="1575891395735.png" alt="1575891395735"></p>
+<p>进入start()</p>
+<p><img src="1575891453431.png" alt="1575891453431"></p>
+<p><img src="1575891495519.png" alt="1575891495519"></p>
+<p><img src="1575891515862.png" alt="1575891515862"></p>
+<p><img src="1575891820081.png" alt="1575891820081"></p>
+<p>进入startAcceptorThreads()</p>
+<p><img src="1575892033743.png" alt="1575892033743"></p>
+<p>进入第一个Acceptor</p>
+<p><img src="1575892087240.png" alt="1575892087240"></p>
+<p>进入第二个位置createAcceptor();</p>
+<p><img src="1575892126763.png" alt="1575892126763"></p>
+<p><img src="1575892139788.png" alt="1575892139788"></p>
+<p><img src="1575892177878.png" alt="1575892177878"></p>
+<p><img src="1575892209984.png" alt="1575892209984"></p>
+<p>在run方法中</p>
+<p><img src="1575892270751.png" alt="1575892270751"></p>
+<h4 id="2-6-3-总结"><a href="#2-6-3-总结" class="headerlink" title="2.6.3.总结"></a>2.6.3.总结</h4><ul>
+<li>从启动流程图中以及源码中，我们可以看出Tomcat的启动过程非常标准化，统一按照生命周期管理按口lifecycle的定义进行启动。</li>
+<li>首先调用init()方法进行组件的逐级初始化操作，然后再调用start ()方法进行启动。</li>
+<li>每一级的组件除了完成自身的处理外，还要负责调用子组件响应的生命周期管理方法，组件与组件之间是松耦合的,因为我们可以很容易的通过配置文件进行修改和替换。</li>
+</ul>
+<h3 id="2-7-Tomcat请求处理流程"><a href="#2-7-Tomcat请求处理流程" class="headerlink" title="2.7.Tomcat请求处理流程"></a>2.7.Tomcat请求处理流程</h3><h4 id="2-7-1-流程"><a href="#2-7-1-流程" class="headerlink" title="2.7.1.流程"></a>2.7.1.流程</h4><ul>
+<li><p>设计了这么多层次的容器，Tomcat是怎么确定每一个请求应该由哪个wrapper容器里的servlet来处理的呢 ?</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tomcat是用Mapper组件来完成这个任务的</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Mapper组件的功能就是将用户请求的Url定位到一个servlet ,它的工作原理</p>
+<p><img src="1575948416448.png" alt="1575948416448"></p>
+<ul>
+<li>多层次的Map</li>
+<li>Mapper组件里保存了web应用的配置信息 其实就是容器组件与访问路径的映射关系</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Host容器里配置的域名</span><br><span class="line">Context容器里的web应用路径</span><br><span class="line">Wrapper容器里serv1et映射的路径</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当一个请求到来时，Mapper组件通过解析请求URL里的域名和路径，再到自己保存的Map里去查找,就能定位到一个Servlet。</p>
+</li>
+<li><p>一个请求URL最后只会定位到一个Wrapper容器，也就是一个Servlet</p>
+</li>
+<li><p>例子</p>
+<p><img src="1575948580587.png" alt="1575948580587"></p>
+</li>
+</ul>
+<p><img src="1575948697559.png" alt="1575948697559"></p>
+<p><img src="1575948667654.png" alt="1575948667654"></p>
+<p><img src="1575948754162.png" alt="1575948754162"></p>
+<p><img src="1575948797543.png" alt="1575948797543"></p>
+<p><img src="1575948840243.png" alt="1575948840243"></p>
+<ul>
+<li>总体分为两个部分</li>
+</ul>
+<p><img src="1575948939914.png" alt="1575948939914"></p>
+<p><img src="1575949193321.png" alt="1575949193321"></p>
+<h4 id="2-7-2-源码分析"><a href="#2-7-2-源码分析" class="headerlink" title="2.7.2.源码分析"></a>2.7.2.源码分析</h4><p><img src="1575964047495.png" alt="1575964047495"></p>
+<ul>
+<li><p>在前面所讲解的Tomca t的整体架构中,我们发现Tomcat中的各个组件各司其职,组件之间松耦合，确保了整体架构的可伸缩性和可拓展性,那么在组件内部,如何增强组件的灵活性和拓展性呢?</p>
+</li>
+<li><p>在Tomcat中 ,每个Container组件采用责任链模式来完成具体的请求处理。</p>
+</li>
+<li><p>在Tomcat中定义了Pipeline和valve两个接口，Pipeline用于构建责任链，后者代表责任链 上的每个处理器。Pipeline中维护了一个基础的valve ,它始终位于Pipeline的末端(最后执行) , 封装了具体的请求处理和输出响应的过程。当然,我们也可以调用addvalve()方法，为pipeline 添加其他的valve，后添加的valve 位于基础的valve之前,并按照添加顺序执行。Pipiline通过获得首个valxe来启动整合链条的执行</p>
+</li>
+<li><p>在源码的Tomcat中部署一个Servlet，访问</p>
+</li>
+</ul>
+<p><img src="1575961071432.png" alt="1575961071432"></p>
+<p><img src="1575961080666.png" alt="1575961080666"></p>
+<p><img src="1575960908595.png" alt="1575960908595"></p>
+<p><img src="1575961520950.png" alt="1575961520950"></p>
+<p><img src="1575961610352.png" alt="1575961610352"></p>
+<p><img src="1575961671025.png" alt="1575961671025"></p>
+<p><img src="1575961696209.png" alt="1575961696209"></p>
+<p><img src="1575961859207.png" alt="1575961859207"></p>
+<p><img src="1575962230435.png" alt="1575962230435"></p>
+<p>进入process()</p>
+<p><img src="1575962263145.png" alt="1575962263145"></p>
+<p>在进入实现<img src="1575962415354.png" alt="1575962415354"></p>
+<p><img src="1575962947827.png" alt="1575962947827"></p>
+<p>进入process()</p>
+<p><img src="1575963001666.png" alt="1575963001666"></p>
+<p><img src="1575963100940.png" alt="1575963100940"></p>
+<p>进入service()</p>
+<p><img src="1575963219994.png" alt="1575963219994"></p>
+<p><img src="1575963501254.png" alt="1575963501254"></p>
+<p><img src="1575963622276.png" alt="1575963622276"></p>
+<p>适配器对象调用service方法</p>
+<p><img src="1575963739698.png" alt="1575963739698"></p>
+<p><img src="1575963937143.png" alt="1575963937143"></p>
+<p>getContainer()返回的就是Engine</p>
+<p><img src="1575963986585.png" alt="1575963986585"></p>
+<p><img src="1575964251337.png" alt="1575964251337"></p>
+<p><img src="1575964294241.png" alt="1575964294241"></p>
+<p><img src="1575964490993.png" alt="1575964490993"></p>
+<p><img src="1575964614946.png" alt="1575964614946"></p>
+<p>进入</p>
+<p><img src="1575964691741.png" alt="1575964691741"></p>
+<p>再次进入invoke()</p>
+<p><img src="1575964490993.png" alt="1575964490993"></p>
+<p><img src="1575964727634.png" alt="1575964727634"></p>
+<p><img src="1575964793930.png" alt="1575964793930"></p>
+<p><img src="1575964860165.png" alt="1575964860165"></p>
+<p><img src="1575964893851.png" alt="1575964893851"></p>
+<p><img src="1575964968995.png" alt="1575964968995"></p>
+<p><img src="1575965021915.png" alt="1575965021915"></p>
+<p><img src="1575965154876.png" alt="1575965154876"></p>
+<p><img src="1575965288699.png" alt="1575965288699"></p>
+<p><img src="1575965340001.png" alt="1575965340001"></p>
+<p><img src="1575965568050.png" alt="1575965568050"></p>
+<p><img src="1575965665102.png" alt="1575965665102"></p>
+<p><img src="1575965730442.png" alt="1575965730442"></p>
+<p><img src="1575965744638.png" alt="1575965744638"></p>
+<p><img src="1575965808902.png" alt="1575965808902"></p>
+<p><img src="1575966344598.png" alt="1575966344598"></p>
+<p><img src="1575966387484.png" alt="1575966387484"></p>
+<p><img src="1575966435890.png" alt="1575966435890"></p>
+<h2 id="3-Jasper"><a href="#3-Jasper" class="headerlink" title="3.Jasper"></a>3.Jasper</h2><ul>
+<li>对于基于Jsp的Web应用来说,我们可以直接在Jsp页面中编写Java代码，添加第三方的标签库，以及使用r工表达式。但是无论经过何种形式的处理, 最终输出到客户端的都是标准的ITML页面(包含js , css… )，并不包含任何的java相关的语法。也就是说 ，我们可以把jsp看做是一种运行在服务端的脚本。那么服务器是如何将Jsp页面转换为HTMI页面的呢?</li>
+<li>Jasper模块是Tomcat的Jsp核心引擎,我们知道Jsp本质上是一个servlet。Tomcat使用Jasper对Jsp语法进行解析 ,生成servlet并生成class字节码,用户在进行访问jsp时,会访问servlet ,最终将访问的结果直接响应在浏览器端。</li>
+<li>另外,在运行的时候, Jasper还会检测Jsp文件是否修改，如果修改，则会重新编译Jsp文件。</li>
+</ul>
+<h3 id="3-1-Jsp编译方式"><a href="#3-1-Jsp编译方式" class="headerlink" title="3.1.Jsp编译方式"></a>3.1.Jsp编译方式</h3><h4 id="3-1-1-运行时编译"><a href="#3-1-1-运行时编译" class="headerlink" title="3.1.1.运行时编译"></a>3.1.1.运行时编译</h4><ul>
+<li>Tomcat并不会在启动jsp应用的时候自动编译jsp文件，而是在客户端第一次请求时 ，才编译需要访问的的jsp文件。</li>
+</ul>
+<h5 id="3-1-1-1-编译过程"><a href="#3-1-1-1-编译过程" class="headerlink" title="3.1.1.1.编译过程"></a>3.1.1.1.编译过程</h5><ul>
+<li>Tomcat在默认的web.xml中配置了一个org.apache.jasper.servlet.JspServlet ,用于处理所有的.jsp或.jspx结尾的请求，该Servlet实现即是运行时编译的入口。</li>
+</ul>
+<p><img src="1575969024776.png" alt="1575969024776"></p>
+<p><img src="1575969060980.png" alt="1575969060980"></p>
+<ul>
+<li><p>Jspservlet处理流程图:</p>
+<p><img src="1575969193345.png" alt="1575969193345"></p>
+</li>
+</ul>
+<p><img src="1575969517522.png" alt="1575969517522"></p>
+<p><img src="1575969510275.png" alt="1575969510275"></p>
+<p><img src="1575969612450.png" alt="1575969612450"></p>
+<p>获取jsp文件路径</p>
+<p><img src="1575969633235.png" alt="1575969633235"></p>
+<p>是否是预编译请求</p>
+<p><img src="1575969700425.png" alt="1575969700425"></p>
+<p>进入serviceJspFlie</p>
+<p><img src="1575969755938.png" alt="1575969755938"></p>
+<p><img src="1575969831700.png" alt="1575969831700"></p>
+<p>进入service方法 进入ctxt.compile()</p>
+<p><img src="1575970502163.png" alt="1575970502163"></p>
+<p><img src="1575970653059.png" alt="1575970653059"></p>
+<p><img src="1575970729306.png" alt="1575970729306"></p>
+<p><img src="1575970753129.png" alt="1575970753129"></p>
+<p><img src="1575971217230.png" alt="1575971217230"></p>
+<p>退回到ctxt.compile的下一行</p>
+<p><img src="1575971506700.png" alt="1575971506700"></p>
+<p><img src="1575971689979.png" alt="1575971689979"></p>
+<p>放行到476 进入</p>
+<p><img src="1575971765482.png" alt="1575971765482"></p>
+<p><img src="1575971955537.png" alt="1575971955537"></p>
+<p>执行我们的jsp的servlet</p>
+<h5 id="3-1-1-2-编译结果"><a href="#3-1-1-2-编译结果" class="headerlink" title="3.1.1.2.编译结果"></a>3.1.1.2.编译结果</h5><ul>
+<li>如果在tomcat/conf/web.xml中配置了参数scratchdir，则jsp编译后的结果就会存储在该目录下</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;init-param&gt;</span><br><span class="line">&lt;par. am-name&gt; sora tahdir&lt;&#x2F;par am- name&gt;</span><br><span class="line">&lt;param-value&gt;D: &#x2F; tmp&#x2F;jsp&#x2F;&lt;&#x2F;param-value&gt;</span><br><span class="line">&lt;&#x2F;init -param&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果没有配置该选项，则会将编译后的结果,存储在Tomcat安装目录下的</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Tomcat安装目录&#x2F;work&#x2F;Catalina (Engine名称) &#x2F;localhost (Host名称)&#x2F;（Context名称）</span><br><span class="line"></span><br><span class="line">假设项目名称为jsp_demo_01，默认的目录为: work&#x2F;catalina&#x2F;localhost&#x2F;jsp_demo_01</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果使用的是IDEA开发工具集成tomcat访问web工程中的jsp，编译后的结果</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\Administrator\.IntelliJIdea2019.1\system\tomcat\_project_ tomcat\work\Catalina\localhost\jsp_demo_01_war_exploded\org\apache\jsp</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="3-1-2-预编译"><a href="#3-1-2-预编译" class="headerlink" title="3.1.2.预编译"></a>3.1.2.预编译</h4><ul>
+<li>除了运行时编译，我们还可以直接在web应用启动时，一次性将web应用中的所有的Jse页面一次性编译完成。</li>
+<li>在这种情况下, web应用运行过程中，使可以不必再进行实时编译,而是直接调用Jsp页面对应的servlet完成请求处理，从而提升 系统性能。</li>
+<li>Tomcat提供了一个shell程序JspC。用于支持JSP预编译,而且在Tomcat的安装目录下提供了一个catalina-tasks.xml文件，声明了Tomcat支持的Ant任务，因此，我们很容易使用Ant来执行JSP 预编译。( 要想使用这种方式,必须得确保在此之前已经下载并安装了Apache Ant )。</li>
+</ul>
+<h3 id="3-2-JSP编译原理"><a href="#3-2-JSP编译原理" class="headerlink" title="3.2. JSP编译原理"></a>3.2. JSP编译原理</h3><ul>
+<li><p>类名为index_jsp.java继承自org.apache.jasper . runtime.HttpJspBase，该类是HttpServlet的子类，所以Jsp本质就是一个servlet</p>
+<p><img src="1576029721866.png" alt="1576029721866"></p>
+<p><img src="1576029753033.png" alt="1576029753033"></p>
+</li>
+<li><p>通过属性_jspx_dependants 保存了当前Jsp页面依赖的资源，包含引入的外部的Jsp页面、 导入的标签、标签所在的jar包等，便于后续处理过程中使用（如重新编译检测,因此它以Map形式保存了每个资源的上次修改时间）</p>
+<p><img src="1576029819498.png" alt="1576029819498"></p>
+<p><img src="1576029834180.png" alt="1576029834180"></p>
+</li>
+<li><p>通过属性_jspx_imports_ packages存放导入的java包，默认导入javax.servlet，javax.servlet.http，javax.servlet.jsp</p>
+<p><img src="1576029963400.png" alt="1576029963400"></p>
+</li>
+<li><p>通过属性_jspx_imports_classes存放导入的类，通过import指令导入的DateFormat，SimpleDateFormat，Date都会包含在该集合中。_jspx_imports_ packages和jspx_imports_clases属性主要用于配置EL引擎上下文。</p>
+<p><img src="1576029891212.png" alt="1576029891212"></p>
+<p><img src="1576029981836.png" alt="1576029981836"></p>
+</li>
+<li><p>请求处理由方法_jspService完成，而在父类HttpJspBase中的service 方法通过模板方法模式，调用了子类的_jspService方法。</p>
+</li>
+</ul>
+<p><img src="1576030178277.png" alt="1576030178277">)<img src="1576030218468.png" alt="1576030218468">)<img src="1576030288725.png" alt="1576030288725"></p>
+<ul>
+<li>_jspService方法中定义了几个重要的局部变量:pageContext 、Session、 application、 config、 out、page。 由于整个页面的输出由_jspService方法完成,因此这些变量和参数会对整个Jsp页面生效。这也是我们为什么可以在Jsp页面使用这些变 量的原因。</li>
+<li>指定文档类型的指令( page)最终转换为response.setContentType()方法调用</li>
+<li>对于每一行的静态内容( HTML) ，调用out.write 输出</li>
+<li>对于&lt;%  …  %&gt;中的java代码，将直接转换为Servlet 类中的代码。如果在 Java代码中嵌入了静态文件，则同样调用out.write输出</li>
+</ul>
+</div><div class="post-copyright"><blockquote><p>原文作者: 掘金木匠</p><p>原文链接: <a href="http://goldcarpenter.github.io/2020/01/11/Tomcat_Part1/">http://goldcarpenter.github.io/2020/01/11/Tomcat_Part1/</a></p><p>版权声明: 转载请注明出处(必须保留作者署名及链接)</p></blockquote></div><div class="tags"><a href="/tags/Tomcat/">Tomcat</a></div><div class="post-share"><div class="social-share"><span>分享到:</span></div></div><div class="post-nav"><a href="/2020/01/20/Tomcat_Part2/" class="pre">Tomcat</a><a href="/2019/12/21/ThreadLocal/" class="next">ThreadLocal总结</a></div><div id="comments"><div id="SOHUCS" sid="2020/01/11/Tomcat_Part1/"></div></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tomcat"><span class="toc-text">Tomcat</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Tomcat目录结构"><span class="toc-text">1.Tomcat目录结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Tomcat整体架构"><span class="toc-text">2.Tomcat整体架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Http服务器处理请求"><span class="toc-text">2.1.Http服务器处理请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Servlet容器工作流程"><span class="toc-text">2.2.Servlet容器工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Tomcat整体架构"><span class="toc-text">2.3.Tomcat整体架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-连接器–Coyote"><span class="toc-text">2.4.连接器–Coyote</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-架构介绍"><span class="toc-text">2.4.1.架构介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-IO模型与协议"><span class="toc-text">2.4.2.IO模型与协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-3-连接器组件"><span class="toc-text">2.4.3.连接器组件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5容器–Catalina"><span class="toc-text">2.5容器–Catalina</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-1Catalina地位"><span class="toc-text">2.5.1Catalina地位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-2Catalina结构"><span class="toc-text">2.5.2Catalina结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-3-Container结构"><span class="toc-text">2.5.3.Container结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-Tomcat启动流程"><span class="toc-text">2.6.Tomcat启动流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-1流程"><span class="toc-text">2.6.1流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-2-源码解析"><span class="toc-text">2.6.2.源码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-6-2-1-Lifecycle"><span class="toc-text">2.6.2.1.Lifecycle</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-6-2-2-码源跟踪"><span class="toc-text">2.6.2.2.码源跟踪</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-3-总结"><span class="toc-text">2.6.3.总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-Tomcat请求处理流程"><span class="toc-text">2.7.Tomcat请求处理流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-7-1-流程"><span class="toc-text">2.7.1.流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-7-2-源码分析"><span class="toc-text">2.7.2.源码分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Jasper"><span class="toc-text">3.Jasper</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Jsp编译方式"><span class="toc-text">3.1.Jsp编译方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-运行时编译"><span class="toc-text">3.1.1.运行时编译</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1-1-编译过程"><span class="toc-text">3.1.1.1.编译过程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-1-1-2-编译结果"><span class="toc-text">3.1.1.2.编译结果</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-预编译"><span class="toc-text">3.1.2.预编译</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-JSP编译原理"><span class="toc-text">3.2. JSP编译原理</span></a></li></ol></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/17/Redis_Part3/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Redis_Part2/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/29/Nginx%E5%9F%BA%E7%A1%80/">Nginx</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/26/Redis_Part1/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/10/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part3/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part2/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/25/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part1/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/14/Tomcat_Part4/">Tomcat</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/07/Tomcat_Part3/">Tomcat</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/02/javaIO/">JavaIO</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Debug%E8%AE%B0%E5%BD%95/">Debug记录</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E9%AB%98%E7%BA%A7/">Java高级</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL%E5%9F%BA%E7%A1%80/">MySQL基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E5%BC%80%E5%8F%91/">Web开发</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/IEDA/" style="font-size: 15px;">IEDA</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/MyBatis/" style="font-size: 15px;">MyBatis</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 15px;">Redis</a> <a href="/tags/SpringMVC/" style="font-size: 15px;">SpringMVC</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/ThreadLocal/" style="font-size: 15px;">ThreadLocal</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Tomcat/" style="font-size: 15px;">Tomcat</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a> <a href="/tags/%E5%86%85%E9%83%A8%E7%B1%BB/" style="font-size: 15px;">内部类</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 15px;">多线程</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 15px;">注解</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">34</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> 友情链接</i></div><ul></ul><a href="http://www.scu.edu.cn/" title="四川大学首页" target="_blank">四川大学首页</a><ul></ul><a href="http://www.scu.edu.cn/" title="风雨云知道——待部署" target="_blank">风雨云知道——待部署</a><ul></ul><a href="http://www.scu.edu.cn/" title="在线聊天室——待部署" target="_blank">在线聊天室——待部署</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅本站</a> |  <a href="/about/">联系博主</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">掘金木匠.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.4"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.4" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script><script>window._config = { showScore: true };
+(function(){ 
+  var appid = 'cyuBR2wWE'; 
+  var conf = 'cbd82aee65d05c481319a299102b4811'; 
+  var width = window.innerWidth || document.documentElement.clientWidth; 
+  var nodes =document.getElementsByTagName("head")[0]||document.head||document.documentElement;
+  if (/(Android|iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) && width < 750) {  
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+  }
+  else { 
+    var loadJs=function(d,a){
+      var b=document.createElement("script");b.setAttribute("type","text/javascript");
+      b.setAttribute("charset","UTF-8");
+      b.setAttribute("src",d);
+      if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}
+      nodes.appendChild(b)
+    };
+    loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); 
+  } 
+  var loadCss = function(cssString){  
+    var style=document.createElement("style");  
+    style.setAttribute("type", "text/css");  
+    if(style.styleSheet){// IE  
+        style.styleSheet.cssText = cssString;  
+    } else {// w3c  
+        var cssText = document.createTextNode(cssString);  
+        style.appendChild(cssText);  
+    }
+    nodes.appendChild(style);
+  }
+  //- window.onload=function(){
+  //-   if(window.outerWidth<=775){
+  //-     loadCss('.module-hot-topic,.module-cmt-float-bar{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .cbox-prompt-w span.prompt-empty-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w .form-text-w span.text-null,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w a.comment-link-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w span.comment-text-w,#SOHUCS #SOHU_MAIN .module-cmt-footer .section-service-w div.service-wrap-w a:hover,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w span.wrap-name-w,#SOHUCS #SOHU_MAIN .module-cmt-list .action-click-gw span.click-disable-eg a em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li div.title-name-gw,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number .comment-number span.cy-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number span.comment-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active,#SOHUCS #SOHU_MAIN .module-cmt-list .msg-wrap-gw .wrap-action-gw .action-click-gw span a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .picture-box-gw div.box-action-gw a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-action-gw .action-click-gw span a:hover em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-user-gw span.user-name-gw a{color:#40759b!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-r,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-l,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-r{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-l{background:#FFF!important;top:-2px!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-function-w .uploading-wrapper-dw div.wrapper-image-dw,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-main,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w div.form-text-w,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-list .module-cmt-box .post-wrap-w div.post-wrap-main{border:1px solid #e6e6e6!important;border-radius:20px 20px 20px 20px;margin:0!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw{width:130px!important;height:34px!important;line-height:33px!important;font-size:17px!important;background:#5483b1!important;border-radius:20px!important;color:#FFF!important;-webkit-box-shadow:0 -1px 4px #5483b1 inset;box-shadow:0 -1px 10px #5483b1 inset}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw:before{content:"发表评论"}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a:hover .btn-fw{color:#40759b!important;background:#FFF!important}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li{background:none!important;border-bottom:1px solid #e6e6e6}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active{border:1px solid #e6e6e6;border-radius:10px 10px 0 0;border-bottom:none}#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li .title-name-gw div.title-name-gw-tag{background:#5483b1!important;border-radius:3px}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type div.cmt-list-border{background-color:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item{border:1px solid #e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo{text-align:center;line-height:40px;border-radius:50%!important;background:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo:before{content:"畅";font-size:22px;color:#FFF}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text,#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text i{color:#5483b1!important}#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w{background:#FFF!important}@media screen and (min-width:900px){#SOHUCS #SOHU_MAIN .module-mobile-cmt-list .list-wrapper-wap .list-container-wap .list-item-wap .list-content-wrapper-wap .cmt-list-image-container .cmt-list-image{max-width: 100%;}}');
+  //-   }
+  //- };
+})();
+function removeElement(_element){
+     var _parentElement = _element.parentNode;
+     if(_parentElement){
+            _parentElement.removeChild(_element);
+     }
+}
+var removeAD = document.createElement("div");
+removeAD.id = 'removeAD';
+var adInterval1 = setInterval(function() {
+  if(document.querySelector("#feedAv")){
+    document.querySelector("[node-type=cmt-list]").appendChild(removeAD);
+    document.querySelector("#removeAD").appendChild(document.querySelector("#feedAv"));
+    //- removeElement(document.querySelectorAll("#feedAv")[0]);
+    var feedAv = document.querySelector("#feedAv").children;
+    for( item of feedAv){
+      item.style.display = 'none'
+    }
+    document.querySelector("#removeAD").style.display="none"
+    clearInterval(adInterval1);
+  }
+},1000);
+var adInterval2 = setInterval(function() {
+  if(document.querySelector("#pop_ad")){
+    removeElement(document.querySelector("#pop_ad"));
+    clearInterval(adInterval2);
+  }
+}, 1000);</script><script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script></body></html>
