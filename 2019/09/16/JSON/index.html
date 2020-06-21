@@ -1,0 +1,186 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="JJMJ's blog."><meta name="keywords" content="Java, Spring, MyBatis, 后端"><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.4"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.4"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><title>JSON | 掘金木匠</title><meta name="generator" content="Hexo 4.2.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JSON</h1><a id="logo" href="/.">掘金木匠</a><p class="description">懂金融的软件工程师一定是一个合格的吃货</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">JSON</h1><div class="post-meta"><a href="/2019/09/16/JSON/#comments" class="comment-count"><i id="changyan_count_unit" data-xid="2019/09/16/JSON/"></i>留言,<i id="changyan_parti_unit" data-xid="2019/09/16/JSON/"></i>参与</a><p><span class="date">Sep 16, 2019</span><span><a href="/categories/Java%E5%9F%BA%E7%A1%80/" class="category">Java基础</a></span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>点击</i></i></span></p></div><div class="post-content"><h1 id="1-前后端分离"><a href="#1-前后端分离" class="headerlink" title="1.前后端分离"></a>1.前后端分离</h1><h2 id="1-1-前后端分离前"><a href="#1-1-前后端分离前" class="headerlink" title="1.1.前后端分离前"></a>1.1.前后端分离前</h2><ul>
+<li><p>适合开发小型项目</p>
+</li>
+<li><p>如果后台服务器宕机，将无法获取页面</p>
+<p><img src="1578919696742.png" alt="1578919696742"></p>
+</li>
+</ul>
+<h2 id="1-2-前后端分离后"><a href="#1-2-前后端分离后" class="headerlink" title="1.2.前后端分离后"></a>1.2.前后端分离后</h2><ul>
+<li>适合开发大型项目</li>
+<li>如果后台服务器宕机，也可以有比较好的前端界面</li>
+</ul>
+<p><img src="1578919896413.png" alt="1578919896413"></p>
+<h2 id="1-3-跨域请求问题"><a href="#1-3-跨域请求问题" class="headerlink" title="1.3.跨域请求问题"></a>1.3.跨域请求问题</h2><p>同源：要求<strong>IP</strong>和<strong>端口</strong>都完全相同</p>
+<p><img src="1578920538825.png" alt="1578920538825"></p>
+<ul>
+<li>解决方法：<code>nginx</code>反向代理</li>
+</ul>
+<h1 id="2-Json在前端的使用"><a href="#2-Json在前端的使用" class="headerlink" title="2.Json在前端的使用"></a>2.Json在前端的使用</h1><ul>
+<li><p><code>JSON(JavaScript Object Notation,</code><strong>JS 对象标记</strong><code>)</code>是一种<strong>轻量级的数据交换格式</strong>，目前使用特别广泛。</p>
+</li>
+<li><p>采用完全独立于编程语言的文本格式来存储和表示数据。简洁和清晰的层次结构使得 <code>JSON</code>成为理想的数据交换语言。 </p>
+</li>
+<li><p><code>JSON</code>的存在有两种形式：<code>JSON</code> 字符串和 <code>JSON</code> 对象</p>
+</li>
+<li><p><code>JSON</code> 字符串和 <code>JSON</code> 对象</p>
+<ul>
+<li><code>JSON</code><strong>字符串</strong> 是<code>JSON</code><strong>对象</strong>的字符串表示法</li>
+<li>任何<code>JSON</code><strong>对象</strong>支持的类型都可以通过<code>JSON</code><strong>字符串</strong>来表示</li>
+<li>它使用文本表示一个<code>JSON</code>对象的信息，本质是一个字符串</li>
+<li>需要操作 <code>JSON</code> 中的数据的时候，需要 <code>JSON</code> 对象的格式。</li>
+<li>需要在客户端和服务器之间进行数据交换的时候，使用 <code>JSON</code> 字符串</li>
+<li>Json对象中键多以字符串形式出现，值可取字符串，数值，甚至其他json对象</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">a</span>: <span class="string">'Hello'</span>, <span class="attr">b</span>: <span class="string">'World'</span>&#125;; 		<span class="comment">//这是一个对象，注意键名也是可以使用引号包裹的</span></span><br><span class="line"><span class="keyword">var</span> json = <span class="string">'&#123;"a": "Hello", "b": "World"&#125;'</span>;  <span class="comment">//这是一个 JSON 字符串，本质是一个字符串</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>JSON</code> 字符串 和 <code>JSON</code> 对象互转</p>
+<ul>
+<li><code>JSON</code>字符串—-&gt;<code>JSON</code>对象</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = <span class="built_in">JSON</span>.parse(<span class="string">'&#123;"a": "Hello", "b": "World"&#125;'</span>); </span><br><span class="line">====================================================</span><br><span class="line">&#123;<span class="attr">a</span>: <span class="string">'Hello'</span>, <span class="attr">b</span>: <span class="string">'World'</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>JSON</code>对象—-&gt;<code>JSON</code>字符串</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> json = <span class="built_in">JSON</span>.stringify(&#123;<span class="attr">a</span>: <span class="string">'Hello'</span>, <span class="attr">b</span>: <span class="string">'World'</span>&#125;); </span><br><span class="line">====================================================</span><br><span class="line"><span class="string">'&#123;"a": "Hello", "b": "World"&#125;'</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</li>
+</ul>
+<h1 id="3-GSON"><a href="#3-GSON" class="headerlink" title="3.GSON"></a>3.GSON</h1><ul>
+<li><p>概述:Gson是Google提供的用来在Java对象和JSON数据之间进行映射的Java类库。可以将一个JSON字符串转成一个Java对象</p>
+</li>
+<li><p>功能：通过gson让json字符与javabean互相转换</p>
+</li>
+<li><p>导入<code>GSON.jar</code>包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.google.code.gson&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;gson&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.8.2&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>JavaBean</code>和<code>JSON</code>的互转</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Person person = <span class="keyword">new</span> Person(<span class="number">1</span>, <span class="string">"name"</span>);</span><br><span class="line"><span class="comment">//创建Gson对象实例</span></span><br><span class="line">Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line"><span class="comment">// toJson 方法可以把java对象转换成为json字符串</span></span><br><span class="line">String personJsonString = gson.toJson(person);</span><br><span class="line"><span class="comment">/*  fromJson把json字符串转换回Java对象</span></span><br><span class="line"><span class="comment">   * 第一个参数是 json 字符串</span></span><br><span class="line"><span class="comment">   * 第二个参数是转换回去的Java对象类型</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">Person person1 = gson.fromJson(personJsonString, Person<span class="class">.<span class="keyword">class</span>)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>List</code>和<code>JSON</code>的互转</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Person&gt; personList = <span class="keyword">new</span> ArrayList&lt;&gt;( );</span><br><span class="line">personList.add(<span class="keyword">new</span> Person(<span class="number">1</span>, <span class="string">"name1"</span>));</span><br><span class="line">personList.add(<span class="keyword">new</span> Person(<span class="number">2</span>, <span class="string">"name2"</span>));</span><br><span class="line">Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line"><span class="comment">//把List转换为json字符串[JavaBean和JSON的互转 相同]</span></span><br><span class="line">String personListIsonString = gson.toJson(personList);</span><br><span class="line"><span class="comment">/*  fromJson把json字符串转换回List对象</span></span><br><span class="line"><span class="comment">   * 第一个参数是 json 字符串</span></span><br><span class="line"><span class="comment">   * 第二个参数是 自定义的PersonListType空类的type属性</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">List&lt;Person&gt; list = gson.fromJson(personListJsonString, <span class="keyword">new</span> PersonListType().getType()); </span><br><span class="line">Person person = list.get(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>自定义类继承官方<code>TypeToken</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonListType</span> <span class="keyword">extends</span> <span class="title">TypeToken</span>&lt;<span class="title">ArrayList</span>&lt;<span class="title">Person</span>&gt;&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Map</code>和<code>JSON</code>的互转</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Integer, Person&gt; personMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">personMap.put(<span class="number">1</span>, <span class="keyword">new</span> Person(<span class="number">1</span>, <span class="string">"name1"</span>));</span><br><span class="line">personMap.put(<span class="number">2</span>, <span class="keyword">new</span> Person(<span class="number">2</span>, <span class="string">"name2"</span>));</span><br><span class="line">Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line"><span class="comment">//把map集合转换成为json字符串[JavaBean和JSON的互转 相同]</span></span><br><span class="line">String personMapJsonString = gson.toJson(personMap);</span><br><span class="line"><span class="comment">/*  fromJson把json字符串转换回Map对象[List和JSON的互转 相同]</span></span><br><span class="line"><span class="comment">   * 第一个参数是 json 字符串</span></span><br><span class="line"><span class="comment">   * 第二个参数是 自定义的PersonListType空类的type属性</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// Map&lt;Integer,Person&gt; personMap = gson.fromJson(personMapJsonString, new PersonMapType().getType());【匿名内部类优化】</span></span><br><span class="line">Map&lt;Integer, Person&gt; personMap = gson.fromJson(personMapJsonString, <span class="keyword">new</span> TypeToken&lt;HashMap&lt;Integer, Person&gt;&gt;()&#123;&#125;.getType());</span><br><span class="line">Person p = personMap.get(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public class PersonMapType extends TypeToken&lt;HashMap&lt;Integer, Person&gt;&gt; &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ul>
+<h1 id="4-注意事项"><a href="#4-注意事项" class="headerlink" title="4.注意事项"></a>4.注意事项</h1><ul>
+<li>json字符串中，如果value为””的话，后端对应属性如果是String类型的，那么接受到的就是””，如果是后端属性的类型是Integer、Double等类型，那么接收到的就是null。</li>
+<li>json字符串中，如果value为null的话，后端对应收到的就是null。</li>
+<li>如果某个参数没有value的话，在传json字符串给后端时，要么干脆就不把该字段写到json字符串中；要么写value时， 必须有值，null  或””都行。<br><img src="2018081416513428.png" alt="img"></li>
+</ul>
+<h2 id="Fastjson-amp-Jackson-amp-Gson"><a href="#Fastjson-amp-Jackson-amp-Gson" class="headerlink" title="Fastjson &amp; Jackson &amp; Gson"></a>Fastjson &amp; Jackson &amp; Gson</h2><ul>
+<li><p>JSON—-&gt;Java对象</p>
+<ul>
+<li><p>总结：FastJSON、Jackson速度接近，Gson速度稍慢，不过差距很小。</p>
+</li>
+<li><p>Fastjson进行测试</p>
+<ul>
+<li>当Fastjson字段少于实体类字段：正常通过，字段会被赋予默认值</li>
+<li>当Fastjson字段多于实体类字段：正常通过，Fastjson多余字段不会被反序列化到对象中</li>
+</ul>
+</li>
+<li><p>Jackson进行测试：</p>
+<ul>
+<li><p>当Jackson字段少于实体类字段：正常通过，没有的字段会被赋予默认值</p>
+</li>
+<li><p>当Jackson字段多于实体类字段：报错</p>
+<ul>
+<li><p>在默认情况下，jackson是不支持json串的字段多于实体类字段的，</p>
+</li>
+<li><p>jackson也提供了解决方案：在实体类上，添加注解<code>@JsonIgnoreProperties</code><br><img src="20181226211737150.png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>注解的<code>ignoreUnknown</code>属性，默认值为<code>false</code>，改为true,这样jackson在反序列化的时候，就会忽略掉不存在的属性了</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Java对象—-&gt;JSON序列化</p>
+<ul>
+<li>总结：Jackson速度最快，在测试中比Gson快接近50%，FastJSON和Gson速度接近。</li>
+</ul>
+</li>
+</ul>
+<h2 id="bean中属性名和json不一致解决方案"><a href="#bean中属性名和json不一致解决方案" class="headerlink" title="bean中属性名和json不一致解决方案"></a>bean中属性名和json不一致解决方案</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JsonProperty</span>(value = <span class="string">"CallbackCommand"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getCallbackCommand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> CallbackCommand;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+
+</div><div class="post-copyright"><blockquote><p>原文作者: 掘金木匠</p><p>原文链接: <a href="http://goldcarpenter.github.io/2019/09/16/JSON/">http://goldcarpenter.github.io/2019/09/16/JSON/</a></p><p>版权声明: 转载请注明出处(必须保留作者署名及链接)</p></blockquote></div><div class="tags"><a href="/tags/Java/">Java</a><a href="/tags/JSON/">JSON</a></div><div class="post-share"><div class="social-share"><span>分享到:</span></div></div><div class="post-nav"><a href="/2019/09/22/Spring_AOP/" class="pre">Spring FrameWork</a><a href="/2019/09/12/Spring_IOC/" class="next">Spring FrameWork</a></div><div id="comments"><div id="SOHUCS" sid="2019/09/16/JSON/"></div></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-前后端分离"><span class="toc-text">1.前后端分离</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-前后端分离前"><span class="toc-text">1.1.前后端分离前</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-前后端分离后"><span class="toc-text">1.2.前后端分离后</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-跨域请求问题"><span class="toc-text">1.3.跨域请求问题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Json在前端的使用"><span class="toc-text">2.Json在前端的使用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-GSON"><span class="toc-text">3.GSON</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-注意事项"><span class="toc-text">4.注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Fastjson-amp-Jackson-amp-Gson"><span class="toc-text">Fastjson &amp; Jackson &amp; Gson</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bean中属性名和json不一致解决方案"><span class="toc-text">bean中属性名和json不一致解决方案</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/04/17/Redis_Part3/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/04/04/Redis_Part2/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/29/Nginx%E5%9F%BA%E7%A1%80/">Nginx</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/26/Redis_Part1/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/10/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part3/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/29/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part2/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/25/jdk8%E6%96%B0%E7%89%B9%E6%80%A7_Part1/">JDK8新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/14/Tomcat_Part4/">Tomcat</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/07/Tomcat_Part3/">Tomcat</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/02/javaIO/">JavaIO</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Debug%E8%AE%B0%E5%BD%95/">Debug记录</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E9%AB%98%E7%BA%A7/">Java高级</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL%E5%9F%BA%E7%A1%80/">MySQL基础</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web%E5%BC%80%E5%8F%91/">Web开发</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/Java%E9%9B%86%E5%90%88%E7%B1%BB/" style="font-size: 15px;">Java集合类</a> <a href="/tags/IEDA/" style="font-size: 15px;">IEDA</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/JSON/" style="font-size: 15px;">JSON</a> <a href="/tags/MyBatis/" style="font-size: 15px;">MyBatis</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 15px;">Redis</a> <a href="/tags/SpringMVC/" style="font-size: 15px;">SpringMVC</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/String/" style="font-size: 15px;">String</a> <a href="/tags/Tomcat/" style="font-size: 15px;">Tomcat</a> <a href="/tags/ThreadLocal/" style="font-size: 15px;">ThreadLocal</a> <a href="/tags/IO/" style="font-size: 15px;">IO</a> <a href="/tags/%E5%86%85%E9%83%A8%E7%B1%BB/" style="font-size: 15px;">内部类</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 15px;">多线程</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 15px;">注解</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 15px;">泛型</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">39</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> 友情链接</i></div><ul></ul><a href="http://www.scu.edu.cn/" title="四川大学首页" target="_blank">四川大学首页</a><ul></ul><a href="http://www.scu.edu.cn/" title="风雨云知道——待部署" target="_blank">风雨云知道——待部署</a><ul></ul><a href="http://www.scu.edu.cn/" title="在线聊天室——待部署" target="_blank">在线聊天室——待部署</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |  <a href="/atom.xml">订阅本站</a> |  <a href="/about/">联系博主</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">掘金木匠.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/" target="_blank" rel="noopener"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.4"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.4" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script><script>window._config = { showScore: true };
+(function(){ 
+  var appid = 'cyuBR2wWE'; 
+  var conf = 'cbd82aee65d05c481319a299102b4811'; 
+  var width = window.innerWidth || document.documentElement.clientWidth; 
+  var nodes =document.getElementsByTagName("head")[0]||document.head||document.documentElement;
+  if (/(Android|iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent) && width < 750) {  
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>');
+  }
+  else { 
+    var loadJs=function(d,a){
+      var b=document.createElement("script");b.setAttribute("type","text/javascript");
+      b.setAttribute("charset","UTF-8");
+      b.setAttribute("src",d);
+      if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}
+      nodes.appendChild(b)
+    };
+    loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); 
+  } 
+  var loadCss = function(cssString){  
+    var style=document.createElement("style");  
+    style.setAttribute("type", "text/css");  
+    if(style.styleSheet){// IE  
+        style.styleSheet.cssText = cssString;  
+    } else {// w3c  
+        var cssText = document.createTextNode(cssString);  
+        style.appendChild(cssText);  
+    }
+    nodes.appendChild(style);
+  }
+  //- window.onload=function(){
+  //-   if(window.outerWidth<=775){
+  //-     loadCss('.module-hot-topic,.module-cmt-float-bar{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .cbox-prompt-w span.prompt-empty-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w .form-text-w span.text-null,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w a.comment-link-w,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-minwidth-w div.cont-comment-w span.comment-text-w,#SOHUCS #SOHU_MAIN .module-cmt-footer .section-service-w div.service-wrap-w a:hover,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w span.wrap-name-w,#SOHUCS #SOHU_MAIN .module-cmt-list .action-click-gw span.click-disable-eg a em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li div.title-name-gw,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number .comment-number span.cy-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .cmt-list-number span.comment-number,#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active,#SOHUCS #SOHU_MAIN .module-cmt-list .msg-wrap-gw .wrap-action-gw .action-click-gw span a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .picture-box-gw div.box-action-gw a:hover,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-action-gw .action-click-gw span a:hover em.icon-name-bg,#SOHUCS #SOHU_MAIN .module-cmt-list .wrap-user-gw span.user-name-gw a{color:#40759b!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-r,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-l,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-border-r{display:none!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .post-wrap-border-t div.post-wrap-border-t-l{background:#FFF!important;top:-2px!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-function-w .uploading-wrapper-dw div.wrapper-image-dw,#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w div.post-wrap-main,#SOHUCS #SOHU_MAIN .module-cmt-float-bar .wrap-cont-w .cont-form-w div.form-text-w,#SOHUCS #SOHU_MAIN .module-cmt-header .section-cbox-w .block-head-w div.header-login,#SOHUCS #SOHU_MAIN .module-cmt-list .module-cmt-box .post-wrap-w div.post-wrap-main{border:1px solid #e6e6e6!important;border-radius:20px 20px 20px 20px;margin:0!important}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw{width:130px!important;height:34px!important;line-height:33px!important;font-size:17px!important;background:#5483b1!important;border-radius:20px!important;color:#FFF!important;-webkit-box-shadow:0 -1px 4px #5483b1 inset;box-shadow:0 -1px 10px #5483b1 inset}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a .btn-fw:before{content:"发表评论"}#SOHUCS #SOHU_MAIN .module-cmt-box .post-wrap-w .wrap-action-w .action-issue-w .issue-btn-w a:hover .btn-fw{color:#40759b!important;background:#FFF!important}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li{background:none!important;border-bottom:1px solid #e6e6e6}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type .type-lists li.active{border:1px solid #e6e6e6;border-radius:10px 10px 0 0;border-bottom:none}#SOHUCS #SOHU_MAIN .module-cmt-list .block-title-gw ul li .title-name-gw div.title-name-gw-tag{background:#5483b1!important;border-radius:3px}#SOHUCS #SOHU_MAIN .module-cmt-list .cmt-list-type div.cmt-list-border{background-color:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item{border:1px solid #e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo{text-align:center;line-height:40px;border-radius:50%!important;background:#e6e6e6!important}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item .nt-logo:before{content:"畅";font-size:22px;color:#FFF}#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text,#SOHUCS #SOHU_MAIN .module-cmt-notice ul.nt-list li.nt-item a.nt-text i{color:#5483b1!important}#SOHUCS #SOHU_MAIN .module-cmt-header .section-title-w .title-user-w .user-wrap-w{background:#FFF!important}@media screen and (min-width:900px){#SOHUCS #SOHU_MAIN .module-mobile-cmt-list .list-wrapper-wap .list-container-wap .list-item-wap .list-content-wrapper-wap .cmt-list-image-container .cmt-list-image{max-width: 100%;}}');
+  //-   }
+  //- };
+})();
+function removeElement(_element){
+     var _parentElement = _element.parentNode;
+     if(_parentElement){
+            _parentElement.removeChild(_element);
+     }
+}
+var removeAD = document.createElement("div");
+removeAD.id = 'removeAD';
+var adInterval1 = setInterval(function() {
+  if(document.querySelector("#feedAv")){
+    document.querySelector("[node-type=cmt-list]").appendChild(removeAD);
+    document.querySelector("#removeAD").appendChild(document.querySelector("#feedAv"));
+    //- removeElement(document.querySelectorAll("#feedAv")[0]);
+    var feedAv = document.querySelector("#feedAv").children;
+    for( item of feedAv){
+      item.style.display = 'none'
+    }
+    document.querySelector("#removeAD").style.display="none"
+    clearInterval(adInterval1);
+  }
+},1000);
+var adInterval2 = setInterval(function() {
+  if(document.querySelector("#pop_ad")){
+    removeElement(document.querySelector("#pop_ad"));
+    clearInterval(adInterval2);
+  }
+}, 1000);</script><script src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script></body></html>
